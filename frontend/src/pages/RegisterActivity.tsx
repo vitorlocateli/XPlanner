@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
 export default function RegisterActivity() {
   const [activities, setActivities] = useState<any[]>([]);
   const [formData, setFormData] = useState({
@@ -19,8 +21,12 @@ export default function RegisterActivity() {
   }, []);
 
   const fetchActivities = async () => {
-    const res = await axios.get('http://localhost:3001/transactions');
-    setActivities(res.data);
+    try {
+      const res = await axios.get(`${API_URL}/transactions`);
+      setActivities(res.data);
+    } catch (error) {
+      console.error("Error fetching activities:", error);
+    }
   };
 
   const suggestCategory = (name: string) => {
@@ -39,20 +45,25 @@ export default function RegisterActivity() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await axios.post(`${API_URL}/transactions`, {
-      ...formData,
-      amount: parseFloat(formData.amount),
-    });
-    alert('Atividade cadastrada com sucesso!');
-    setFormData({
-      name: '',
-      amount: '',
-      type: 'fixed',
-      kind: 'expense',
-      category: '',
-      date: new Date().toISOString().split('T')[0],
-    });
-    fetchActivities();
+    try {
+      await axios.post(`${API_URL}/transactions`, {
+        ...formData,
+        amount: parseFloat(formData.amount),
+      });
+      alert('Atividade cadastrada com sucesso!');
+      setFormData({
+        name: '',
+        amount: '',
+        type: 'fixed',
+        kind: 'expense',
+        category: '',
+        date: new Date().toISOString().split('T')[0],
+      });
+      fetchActivities();
+    } catch (error) {
+      console.error("Error saving activity:", error);
+      alert("Erro ao salvar atividade.");
+    }
   };
 
   return (
@@ -167,13 +178,6 @@ export default function RegisterActivity() {
                 ))}
               </tbody>
             </table>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-/table>
           </div>
         </CardContent>
       </Card>

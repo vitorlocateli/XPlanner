@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
 export default function Investments() {
   const [investments, setInvestments] = useState<any[]>([]);
   const [formData, setFormData] = useState({
@@ -20,8 +22,12 @@ export default function Investments() {
   }, []);
 
   const fetchInvestments = async () => {
-    const res = await axios.get('http://localhost:3001/investments');
-    setInvestments(res.data);
+    try {
+      const res = await axios.get(`${API_URL}/investments`);
+      setInvestments(res.data);
+    } catch (error) {
+      console.error("Error fetching investments:", error);
+    }
   };
 
   const fetchStockPrice = async () => {
@@ -44,22 +50,27 @@ export default function Investments() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await axios.post(`${API_URL}/investments`, {
-      ...formData,
-      value: parseFloat(formData.value),
-      quantity: formData.quantity ? parseFloat(formData.quantity) : null,
-      yieldRate: formData.yieldRate ? parseFloat(formData.yieldRate) : null,
-    });
-    alert('Investimento cadastrado com sucesso!');
-    setFormData({
-      name: '',
-      value: '',
-      quantity: '',
-      type: 'fixed',
-      yieldRate: '',
-      date: new Date().toISOString().split('T')[0],
-    });
-    fetchInvestments();
+    try {
+      await axios.post(`${API_URL}/investments`, {
+        ...formData,
+        value: parseFloat(formData.value),
+        quantity: formData.quantity ? parseFloat(formData.quantity) : null,
+        yieldRate: formData.yieldRate ? parseFloat(formData.yieldRate) : null,
+      });
+      alert('Investimento cadastrado com sucesso!');
+      setFormData({
+        name: '',
+        value: '',
+        quantity: '',
+        type: 'fixed',
+        yieldRate: '',
+        date: new Date().toISOString().split('T')[0],
+      });
+      fetchInvestments();
+    } catch (error) {
+      console.error("Error saving investment:", error);
+      alert("Erro ao salvar investimento.");
+    }
   };
 
   return (

@@ -10,7 +10,7 @@ export default function Dashboard() {
   const [data, setData] = useState<any[]>([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/transactions').then((res) => setData(res.data));
+    axios.get(`${API_URL}/transactions`).then((res) => setData(res.data));
   }, []);
 
   const totalIncome = data
