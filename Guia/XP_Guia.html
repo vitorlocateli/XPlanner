@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XP // Extreme Programming — Cyberpunk Edition</title>
+    <script src="./XP_Guia_files/saved_resource"></script>
+    <link rel="stylesheet" href="./XP_Guia_files/all.min.css">
+    <link href="./XP_Guia_files/css2" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cb: { black:'#060606', dark:'#0e0e0e', card:'#131313', orange:'#FF6B00', light:'#FF8C33', dim:'#CC5500', glow:'#FF4500', border:'#1f1f1f' }
+                    },
+                    fontFamily: { orbitron:['Orbitron','sans-serif'], mono:['Share Tech Mono','monospace'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;scrollbar-width:thin;scrollbar-color:#FF6B00 #111}
+        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#0a0a0a}::-webkit-scrollbar-thumb{background:#FF6B00;border-radius:3px}
+        body{background:#060606;font-family:'Share Tech Mono',monospace;overflow-x:hidden;color:#999}
+
+        #read-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#FF4500,#FF6B00,#FF8C33);z-index:9999;transition:width .15s linear;box-shadow:0 0 14px #FF6B00}
+        #scanlines{position:fixed;inset:0;pointer-events:none;z-index:9998;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px)}
+        .cyber-grid{background-image:linear-gradient(rgba(255,107,0,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,107,0,.03) 1px,transparent 1px);background-size:60px 60px}
+
+        .glitch{position:relative;display:inline-block}
+        .glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden}
+        .glitch::before{color:#FF4500;animation:g1 3s infinite linear alternate-reverse;clip-path:inset(0 0 60% 0)}
+        .glitch::after{color:#FF8C33;animation:g2 2.5s infinite linear alternate-reverse;clip-path:inset(40% 0 0 0)}
+        @keyframes g1{0%{transform:translate(0)}20%{transform:translate(-3px,2px)}60%{transform:translate(-1px,1px)}100%{transform:translate(0)}}
+        @keyframes g2{0%{transform:translate(0)}30%{transform:translate(2px,-2px)}70%{transform:translate(1px,2px)}100%{transform:translate(0)}}
+
+        .neon-border{border:1px solid rgba(255,107,0,.2);transition:all .3s}
+        .neon-border:hover{border-color:rgba(255,107,0,.5);box-shadow:0 0 25px rgba(255,107,0,.12),inset 0 0 25px rgba(255,107,0,.03)}
+        .neon-text{text-shadow:0 0 12px rgba(255,107,0,.5),0 0 35px rgba(255,107,0,.15)}
+
+        .flip-card{perspective:1000px;cursor:pointer}
+        .flip-inner{position:relative;width:100%;height:100%;transition:transform .6s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
+        .flip-card.flipped .flip-inner{transform:rotateY(180deg)}
+        .flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px}
+        .flip-back{transform:rotateY(180deg)}
+
+        .reveal{opacity:0;transform:translateY(35px);transition:all .7s cubic-bezier(.4,0,.2,1)}
+        .reveal.revealed{opacity:1;transform:translateY(0)}
+
+        .tab-btn{transition:all .3s}
+        .tab-btn.active{color:#FF6B00;border-color:#FF6B00!important;background:rgba(255,107,0,.08)}
+        .tab-content{display:none;animation:fadeT .4s ease}
+        .tab-content.active{display:block}
+        @keyframes fadeT{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+        .code-block{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:8px;overflow:hidden;position:relative}
+        .code-block pre{padding:1.1rem;overflow-x:auto;font-size:.78rem;line-height:1.75;color:#bbb}
+        .code-block .lang-tag{position:absolute;top:7px;right:10px;font-size:.6rem;color:#FF6B00;background:rgba(255,107,0,.08);padding:2px 8px;border-radius:4px;letter-spacing:.05em}
+        .kw{color:#FF6B00}.str{color:#4EC9B0}.fn{color:#DCDCAA}.cm{color:#444}.num{color:#B5CEA8}.var{color:#9CDCFE}
+
+        .quiz-option{cursor:pointer;transition:all .25s;border:1px solid #1a1a1a;padding:.65rem 1rem;border-radius:8px}
+        .quiz-option:hover{border-color:rgba(255,107,0,.35);background:rgba(255,107,0,.04)}
+        .quiz-option.selected{border-color:#FF6B00;background:rgba(255,107,0,.1)}
+        .quiz-option.correct-answer{border-color:#22c55e!important;background:rgba(34,197,94,.08)!important}
+        .quiz-option.wrong-answer{border-color:#ef4444!important;background:rgba(239,68,68,.06)!important}
+
+        @keyframes pulse-o{0%,100%{box-shadow:0 0 5px rgba(255,107,0,.25)}50%{box-shadow:0 0 22px rgba(255,107,0,.5)}}
+        .pulse-glow{animation:pulse-o 2.5s infinite}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+        .float{animation:float 4s ease-in-out infinite}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+        .typing-cursor::after{content:'_';animation:blink .7s infinite;color:#FF6B00}
+
+        .toast{position:fixed;bottom:2rem;right:2rem;z-index:9999;padding:.9rem 1.4rem;border-radius:8px;font-size:.8rem;transform:translateX(120%);transition:transform .4s cubic-bezier(.4,0,.2,1)}
+        .toast.show{transform:translateX(0)}
+        .toast-success{background:rgba(34,197,94,.12);border:1px solid #22c55e;color:#4ade80}
+        .toast-error{background:rgba(239,68,68,.12);border:1px solid #ef4444;color:#f87171}
+        .toast-info{background:rgba(255,107,0,.12);border:1px solid #FF6B00;color:#FF8C33}
+
+        .comp-table td,.comp-table th{padding:.7rem .9rem;border:1px solid #1a1a1a;text-align:left}
+        .comp-table thead{background:rgba(255,107,0,.06)}
+        .comp-table tbody tr{transition:background .2s}
+        .comp-table tbody tr:hover{background:rgba(255,107,0,.03)}
+
+        .logbook{border:1px solid #1a1a1a;border-radius:8px;background:#0a0a0a;overflow:hidden}
+        .logbook-header{background:rgba(255,107,0,.06);border-bottom:1px solid #1a1a1a;padding:.6rem 1rem;font-size:.7rem;color:#FF6B00;letter-spacing:.08em}
+        .logbook-row{display:grid;grid-template-columns:100px 1fr;gap:0;border-bottom:1px solid #111}
+        .logbook-row:last-child{border-bottom:none}
+        .logbook-label{padding:.5rem .8rem;font-size:.7rem;color:#666;background:#080808;border-right:1px solid #111;display:flex;align-items:center}
+        .logbook-value{padding:.5rem .8rem;font-size:.75rem;color:#888}
+
+        .timer-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .7rem;border-radius:20px;font-size:.65rem;letter-spacing:.06em}
+
+        #chart-tooltip{position:absolute;pointer-events:none;background:rgba(10,10,10,.95);border:1px solid rgba(255,107,0,.4);border-radius:6px;padding:.5rem .7rem;font-size:.7rem;color:#ccc;white-space:nowrap;opacity:0;transition:opacity .15s;z-index:10}
+
+        @media(prefers-reduced-motion:reduce){.glitch::before,.glitch::after,.float,.pulse-glow{animation:none}.reveal{opacity:1;transform:none}}
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:Share Tech Mono, monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.bottom-6{bottom:1.5rem}.left-0{left:0px}.left-8{left:2rem}.left-\[-5px\]{left:-5px}.right-0{right:0px}.right-6{right:1.5rem}.right-8{right:2rem}.top-0{top:0px}.top-1\/3{top:33.333333%}.top-1\/4{top:25%}.top-2\.5{top:0.625rem}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-10{margin-bottom:2.5rem}.mb-12{margin-bottom:3rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.ml-2{margin-left:0.5rem}.mr-2{margin-right:0.5rem}.mt-0\.5{margin-top:0.125rem}.mt-1{margin-top:0.25rem}.mt-10{margin-top:2.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-6{margin-top:1.5rem}.mt-8{margin-top:2rem}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-0\.5{height:0.125rem}.h-1\.5{height:0.375rem}.h-10{height:2.5rem}.h-11{height:2.75rem}.h-12{height:3rem}.h-14{height:3.5rem}.h-2{height:0.5rem}.h-20{height:5rem}.h-24{height:6rem}.h-28{height:7rem}.h-3{height:0.75rem}.h-full{height:100%}.h-px{height:1px}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-11{width:2.75rem}.w-12{width:3rem}.w-16{width:4rem}.w-2{width:0.5rem}.w-20{width:5rem}.w-24{width:6rem}.w-4{width:1rem}.w-full{width:100%}.w-px{width:1px}.w-14{width:3.5rem}.max-w-2xl{max-width:42rem}.max-w-4xl{max-width:56rem}.max-w-5xl{max-width:64rem}.max-w-6xl{max-width:72rem}.max-w-7xl{max-width:80rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.cursor-pointer{cursor:pointer}.list-inside{list-style-position:inside}.list-decimal{list-style-type:decimal}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1\.5{gap:0.375rem}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.space-y-0 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0px * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0px * var(--tw-space-y-reverse))}.space-y-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.375rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.375rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded{border-radius:0.25rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-l-2{border-left-width:2px}.border-t{border-top-width:1px}.border-blue-500\/30{border-color:rgb(59 130 246 / 0.3)}.border-cb-border{--tw-border-opacity:1;border-color:rgb(31 31 31 / var(--tw-border-opacity, 1))}.border-cb-orange{--tw-border-opacity:1;border-color:rgb(255 107 0 / var(--tw-border-opacity, 1))}.border-cb-orange\/30{border-color:rgb(255 107 0 / 0.3)}.border-cb-orange\/40{border-color:rgb(255 107 0 / 0.4)}.border-cb-orange\/50{border-color:rgb(255 107 0 / 0.5)}.border-green-500\/30{border-color:rgb(34 197 94 / 0.3)}.border-purple-500\/30{border-color:rgb(168 85 247 / 0.3)}.bg-blue-500\/10{background-color:rgb(59 130 246 / 0.1)}.bg-cb-black{--tw-bg-opacity:1;background-color:rgb(6 6 6 / var(--tw-bg-opacity, 1))}.bg-cb-card{--tw-bg-opacity:1;background-color:rgb(19 19 19 / var(--tw-bg-opacity, 1))}.bg-cb-glow{--tw-bg-opacity:1;background-color:rgb(255 69 0 / var(--tw-bg-opacity, 1))}.bg-cb-orange{--tw-bg-opacity:1;background-color:rgb(255 107 0 / var(--tw-bg-opacity, 1))}.bg-cb-orange\/10{background-color:rgb(255 107 0 / 0.1)}.bg-cb-orange\/20{background-color:rgb(255 107 0 / 0.2)}.bg-green-500\/10{background-color:rgb(34 197 94 / 0.1)}.bg-purple-500\/10{background-color:rgb(168 85 247 / 0.1)}.bg-gradient-to-b{background-image:linear-gradient(to bottom, var(--tw-gradient-stops))}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.from-cb-glow{--tw-gradient-from:#FF4500 var(--tw-gradient-from-position);--tw-gradient-to:rgb(255 69 0 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-cb-glow\/20{--tw-gradient-from:rgb(255 69 0 / 0.2) var(--tw-gradient-from-position);--tw-gradient-to:rgb(255 69 0 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-cb-orange\/30{--tw-gradient-from:rgb(255 107 0 / 0.3) var(--tw-gradient-from-position);--tw-gradient-to:rgb(255 107 0 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.to-cb-orange{--tw-gradient-to:#FF6B00 var(--tw-gradient-to-position)}.to-transparent{--tw-gradient-to:transparent var(--tw-gradient-to-position)}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-8{padding-left:2rem;padding-right:2rem}.py-14{padding-top:3.5rem;padding-bottom:3.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-20{padding-top:5rem;padding-bottom:5rem}.py-24{padding-top:6rem;padding-bottom:6rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.pb-1{padding-bottom:0.25rem}.pb-2{padding-bottom:0.5rem}.pb-4{padding-bottom:1rem}.pb-5{padding-bottom:1.25rem}.pb-6{padding-bottom:1.5rem}.pl-4{padding-left:1rem}.pl-6{padding-left:1.5rem}.pt-2\.5{padding-top:0.625rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.font-mono{font-family:Share Tech Mono, monospace}.font-orbitron{font-family:Orbitron, sans-serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[9px\]{font-size:9px}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-black{font-weight:900}.font-bold{font-weight:700}.uppercase{text-transform:uppercase}.italic{font-style:italic}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.tracking-\[\.4em\]{letter-spacing:.4em}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}.text-blue-400{--tw-text-opacity:1;color:rgb(96 165 250 / var(--tw-text-opacity, 1))}.text-cb-black{--tw-text-opacity:1;color:rgb(6 6 6 / var(--tw-text-opacity, 1))}.text-cb-dim{--tw-text-opacity:1;color:rgb(204 85 0 / var(--tw-text-opacity, 1))}.text-cb-light{--tw-text-opacity:1;color:rgb(255 140 51 / var(--tw-text-opacity, 1))}.text-cb-orange{--tw-text-opacity:1;color:rgb(255 107 0 / var(--tw-text-opacity, 1))}.text-gray-100{--tw-text-opacity:1;color:rgb(243 244 246 / var(--tw-text-opacity, 1))}.text-gray-200{--tw-text-opacity:1;color:rgb(229 231 235 / var(--tw-text-opacity, 1))}.text-gray-300{--tw-text-opacity:1;color:rgb(209 213 219 / var(--tw-text-opacity, 1))}.text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity, 1))}.text-gray-500{--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity, 1))}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.text-green-400{--tw-text-opacity:1;color:rgb(74 222 128 / var(--tw-text-opacity, 1))}.text-purple-400{--tw-text-opacity:1;color:rgb(192 132 252 / var(--tw-text-opacity, 1))}.text-red-400{--tw-text-opacity:1;color:rgb(248 113 113 / var(--tw-text-opacity, 1))}.opacity-0{opacity:0}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-1000{transition-duration:1000ms}.duration-300{transition-duration:300ms}.hover\:border-cb-orange\/50:hover{border-color:rgb(255 107 0 / 0.5)}.hover\:bg-cb-light:hover{--tw-bg-opacity:1;background-color:rgb(255 140 51 / var(--tw-bg-opacity, 1))}.hover\:bg-cb-orange\/10:hover{background-color:rgb(255 107 0 / 0.1)}.hover\:bg-cb-orange\/30:hover{background-color:rgb(255 107 0 / 0.3)}.hover\:text-cb-orange:hover{--tw-text-opacity:1;color:rgb(255 107 0 / var(--tw-text-opacity, 1))}.hover\:text-red-400:hover{--tw-text-opacity:1;color:rgb(248 113 113 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.sm\:flex-row{flex-direction:row}.sm\:text-5xl{font-size:3rem;line-height:1}}@media (min-width: 768px){.md\:flex{display:flex}.md\:hidden{display:none}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:p-10{padding:2.5rem}.md\:p-6{padding:1.5rem}.md\:p-8{padding:2rem}.md\:px-6{padding-left:1.5rem;padding-right:1.5rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-7xl{font-size:4.5rem;line-height:1}.md\:text-base{font-size:1rem;line-height:1.5rem}}@media (min-width: 1024px){.lg\:block{display:block}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}}</style></head>
+<body class="cyber-grid">
+    <div id="read-progress" style="width: 61.0978%;"></div>
+    <div id="scanlines"></div>
+    <canvas id="particles" style="position:fixed;inset:0;pointer-events:none;z-index:0" width="1440" height="765"></canvas>
+
+    <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" style="background: rgba(6, 6, 6, 0.85); backdrop-filter: blur(14px); border-bottom: 1px solid rgba(255, 107, 0, 0.12);">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
+            <a href="https://ead.graduacao.fecap.br/pluginfile.php/794677/mod_resource/content/1/Novo%28a%29%20Documento%20de%20Texto.html#hero" class="font-orbitron font-bold text-cb-orange text-xs tracking-widest neon-text">XP://</a>
+            <div class="hidden md:flex gap-5 text-[11px] tracking-wider text-gray-500">
+                <a href="https://ead.graduacao.fecap.br/pluginfile.php/794677/mod_resource/content/1/Novo%28a%29%20Documento%20de%20Texto.html#intro" class="hover:text-cb-orange transition-colors">ORIGEM</a>
+                <a href="https://ead.graduacao.fecap.br/pluginfile.php/794677/mod_resource/content/1/Novo%28a%29%20Documento%20de%20Texto.html#valores" class="hover:text-cb-orange transition-colors">VALORES</a>
+                <a href="https://ead.graduacao.fecap.br/pluginfile.php/794677/mod_resource/content/1/Novo%28a%29%20Documento%20de%20Texto.html#praticas" class="hover:text-cb-orange transition-colors">PRÁTICAS</a>
+                <a href="https://ead.graduacao.fecap.br/pluginfile.php/794677/mod_resource/content/1/Novo%28a%29%20Documento%20de%20Texto.html#comparacao" class="hover:text-cb-orange transition-colors">XP vs SCRUM</a>
+                <a href="https://ead.graduacao.fecap.br/pluginfile.php/794677/mod_resource/content/1/Novo%28a%29%20Documento%20de%20Texto.html#desafios" class="hover:text-cb-orange transition-colors">DESAFIOS</a>
+                <a href="https://ead.graduacao.fecap.br/pluginfile.php/794677/mod_resource/content/1/Novo%28a%29%20Documento%20de%20Texto.html#quiz" class="hover:text-cb-orange transition-colors">QUIZ</a>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden text-cb-orange text-lg"><i class="fas fa-bars"></i></button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden px-4 pb-4 text-[11px] tracking-wider text-gray-500 flex flex-col gap-3">
+            <a href="https://ead.graduacao.fecap.br/pluginfile.php/794677/mod_resource/content/1/Novo%28a%29%20Documento%20de%20Texto.html#intro" class="hover:text-cb-orange transition-colors">ORIGEM</a>
+            <a href="https://ead.graduacao.fecap.br/pluginfile.php/794677/mod_resource/content/1/Novo%28a%29%20Documento%20de%20Texto.html#valores" class="hover:text-cb-orange transition-colors">VALORES</a>
+            <a href="https://ead.graduacao.fecap.br/pluginfile.php/794677/mod_resource/content/1/Novo%28a%29%20Documento%20de%20Texto.html#praticas" class="hover:text-cb-orange transition-colors">PRÁTICAS</a>
+            <a href="https://ead.graduacao.fecap.br/pluginfile.php/794677/mod_resource/content/1/Novo%28a%29%20Documento%20de%20Texto.html#comparacao" class="hover:text-cb-orange transition-colors">XP vs SCRUM</a>
+            <a href="https://ead.graduacao.fecap.br/pluginfile.php/794677/mod_resource/content/1/Novo%28a%29%20Documento%20de%20Texto.html#desafios" class="hover:text-cb-orange transition-colors">DESAFIOS</a>
+            <a href="https://ead.graduacao.fecap.br/pluginfile.php/794677/mod_resource/content/1/Novo%28a%29%20Documento%20de%20Texto.html#quiz" class="hover:text-cb-orange transition-colors">QUIZ</a>
+        </div>
+    </nav>
+
+    <section id="hero" class="relative min-h-screen flex flex-col items-center justify-center px-4 text-center" style="z-index:1">
+        <div class="mb-4 text-[10px] tracking-[.4em] text-cb-dim uppercase">Sistema de Aprendizado v2.0</div>
+        <h1 class="glitch font-orbitron font-black text-4xl sm:text-5xl md:text-7xl text-gray-100 leading-tight mb-6" data-text="EXTREME PROGRAMMING">EXTREME PROGRAMMING</h1>
+        <p id="hero-subtitle" class="text-gray-500 text-sm md:text-base max-w-2xl mb-2" style="min-height:1.5em">Leve as boas práticas de desenvolvimento ao extremo. Onde a mudança não é cara e a qualidade é inegociável.</p>
+        <p class="text-gray-600 text-[10px] mt-6 tracking-widest">CLASSE: ENGENHARIA DE SOFTWARE // MÓDULO: METODOLOGIAS ÁGEIS</p>
+        <div class="mt-10 flex flex-col items-center gap-2 text-gray-600 text-[10px]" style="animation:float 3s ease-in-out infinite"><span>SCROLL DOWN</span><i class="fas fa-chevron-down"></i></div>
+        <div class="absolute top-1/4 left-8 w-px h-28 bg-gradient-to-b from-cb-orange/30 to-transparent hidden lg:block"></div>
+        <div class="absolute top-1/3 right-8 w-px h-20 bg-gradient-to-b from-cb-glow/20 to-transparent hidden lg:block"></div>
+    </section>
+
+    <section id="intro" class="relative py-24 px-4" style="z-index:1">
+        <div class="max-w-5xl mx-auto">
+            <div class="reveal flex items-center gap-4 mb-12 revealed"><div class="w-12 h-px bg-cb-orange"></div><span class="font-orbitron text-[10px] text-cb-orange tracking-widest">SEÇÃO 01 // ORIGEM</span></div>
+            <div class="reveal grid md:grid-cols-2 gap-10 revealed">
+                <div>
+                    <h2 class="font-orbitron font-bold text-2xl md:text-3xl text-gray-100 mb-6">A Origem<br><span class="text-cb-orange">do Caos Controlado</span></h2>
+                    <p class="text-gray-400 leading-relaxed mb-4">Em 1996, <span class="text-gray-200 font-bold">Kent Beck</span> foi contratado pela Chrysler para resgatar o projeto <span class="text-cb-light">C3 (Comprehensive Compensation System)</span> — um sistema de folha de pagamento que estava falhando espetacularmente.</p>
+                    <p class="text-gray-400 leading-relaxed mb-4">Diante do desastre, Beck decidiu algo radical: levar todas as boas práticas de desenvolvimento ao <span class="text-cb-orange font-bold">extremo absoluto</span>.</p>
+                    <p class="text-gray-400 leading-relaxed">Se revisar código é bom? Todos revisam o tempo todo. Se testar é bom? Testamos antes de codificar. Se integrar é bom? Integramos várias vezes ao dia.</p>
+                </div>
+                <div class="neon-border rounded-xl p-6 bg-cb-card">
+                    <div class="text-[10px] text-cb-orange tracking-widest mb-4 font-orbitron">DADOS DO SISTEMA</div>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between border-b border-cb-border pb-2"><span class="text-gray-500">ANO_CRIAÇÃO</span><span class="text-gray-200">1996</span></div>
+                        <div class="flex justify-between border-b border-cb-border pb-2"><span class="text-gray-500">CRIADOR</span><span class="text-cb-light">Kent Beck</span></div>
+                        <div class="flex justify-between border-b border-cb-border pb-2"><span class="text-gray-500">PROJETO_ORIGEM</span><span class="text-cb-light">Chrysler C3</span></div>
+                        <div class="flex justify-between border-b border-cb-border pb-2"><span class="text-gray-500">FILOSOFIA</span><span class="text-cb-orange">"Fazer o certo"</span></div>
+                        <div class="flex justify-between border-b border-cb-border pb-2"><span class="text-gray-500">TIPO</span><span class="text-gray-200">Metodologia Ágil</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">FOCO_PRIMÁRIO</span><span class="text-gray-200">Excelência Técnica</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="valores" class="relative py-24 px-4" style="z-index:1">
+        <div class="max-w-6xl mx-auto">
+            <div class="reveal flex items-center gap-4 mb-4 revealed"><div class="w-12 h-px bg-cb-orange"></div><span class="font-orbitron text-[10px] text-cb-orange tracking-widest">SEÇÃO 02 // CORE VALUES</span></div>
+            <h2 class="reveal font-orbitron font-bold text-2xl md:text-3xl text-gray-100 mb-4 revealed">Os 5 Valores <span class="text-cb-orange">Fundamentais</span></h2>
+            <p class="reveal text-gray-500 text-sm mb-12 revealed">Clique em cada card para revelar mais detalhes.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5" id="values-grid"><div class="flip-card reveal revealed" style="height: 255px;"><div class="flip-inner"><div class="flip-front neon-border bg-cb-card flex flex-col items-center justify-center p-5 text-center"><div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl mb-3" style="background:#FF6B0012;color:#FF6B00"><i class="fas fa-comments"></i></div><h3 class="font-orbitron text-sm text-gray-100 mb-2">Comunicação</h3><p class="text-gray-500 text-xs leading-relaxed">Olho no olho, feedback constante.</p><div class="mt-3 text-cb-orange text-[9px] tracking-widest">CLIQUE PARA DETALHES</div></div><div class="flip-back neon-border bg-cb-card flex flex-col justify-center p-5" style="border-color:#FF6B0035"><h3 class="font-orbitron text-[10px] mb-3" style="color:#FF6B00">COMUNICAÇÃO</h3><p class="text-gray-400 text-xs leading-relaxed">No XP, a comunicação face-a-face é prioridade absoluta. Documentação existe, mas conversas diretas resolvem problemas mais rápido. O valor está na troca humana.</p></div></div></div><div class="flip-card reveal revealed" style="height: 255px;"><div class="flip-inner"><div class="flip-front neon-border bg-cb-card flex flex-col items-center justify-center p-5 text-center"><div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl mb-3" style="background:#FF8C3312;color:#FF8C33"><i class="fas fa-minimize"></i></div><h3 class="font-orbitron text-sm text-gray-100 mb-2">Simplicidade</h3><p class="text-gray-500 text-xs leading-relaxed">Fazer apenas o necessário para hoje.</p><div class="mt-3 text-cb-orange text-[9px] tracking-widest">CLIQUE PARA DETALHES</div></div><div class="flip-back neon-border bg-cb-card flex flex-col justify-center p-5" style="border-color:#FF8C3335"><h3 class="font-orbitron text-[10px] mb-3" style="color:#FF8C33">SIMPLICIDADE</h3><p class="text-gray-400 text-xs leading-relaxed">Não antecipe necessidades futuras. YAGNI: You Aren't Gonna Need It. Código simples é mais fácil de mudar, testar e entender.</p></div></div></div><div class="flip-card reveal revealed" style="height: 255px;"><div class="flip-inner"><div class="flip-front neon-border bg-cb-card flex flex-col items-center justify-center p-5 text-center"><div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl mb-3" style="background:#FF450012;color:#FF4500"><i class="fas fa-rotate"></i></div><h3 class="font-orbitron text-sm text-gray-100 mb-2">Feedback</h3><p class="text-gray-500 text-xs leading-relaxed">Ciclos curtos de entrega.</p><div class="mt-3 text-cb-orange text-[9px] tracking-widest">CLIQUE PARA DETALHES</div></div><div class="flip-back neon-border bg-cb-card flex flex-col justify-center p-5" style="border-color:#FF450035"><h3 class="font-orbitron text-[10px] mb-3" style="color:#FF4500">FEEDBACK</h3><p class="text-gray-400 text-xs leading-relaxed">Entregas frequentes = feedback frequente = direção correta. Testes, demos ao cliente, CI — tudo gera loops rápidos de feedback.</p></div></div></div><div class="flip-card reveal revealed" style="height: 255px;"><div class="flip-inner"><div class="flip-front neon-border bg-cb-card flex flex-col items-center justify-center p-5 text-center"><div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl mb-3" style="background:#FF6B0012;color:#FF6B00"><i class="fas fa-shield-halved"></i></div><h3 class="font-orbitron text-sm text-gray-100 mb-2">Coragem</h3><p class="text-gray-500 text-xs leading-relaxed">Corrigir erros rápido. Dizer não.</p><div class="mt-3 text-cb-orange text-[9px] tracking-widest">CLIQUE PARA DETALHES</div></div><div class="flip-back neon-border bg-cb-card flex flex-col justify-center p-5" style="border-color:#FF6B0035"><h3 class="font-orbitron text-[10px] mb-3" style="color:#FF6B00">CORAGEM</h3><p class="text-gray-400 text-xs leading-relaxed">Coragem para refatorar código ruim, dizer não a prazos inviáveis, descartar código que não funciona. Coragem disciplinada.</p></div></div></div><div class="flip-card reveal revealed" style="height: 255px;"><div class="flip-inner"><div class="flip-front neon-border bg-cb-card flex flex-col items-center justify-center p-5 text-center"><div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl mb-3" style="background:#FF8C3312;color:#FF8C33"><i class="fas fa-handshake"></i></div><h3 class="font-orbitron text-sm text-gray-100 mb-2">Respeito</h3><p class="text-gray-500 text-xs leading-relaxed">Entre o time e com o cliente.</p><div class="mt-3 text-cb-orange text-[9px] tracking-widest">CLIQUE PARA DETALHES</div></div><div class="flip-back neon-border bg-cb-card flex flex-col justify-center p-5" style="border-color:#FF8C3335"><h3 class="font-orbitron text-[10px] mb-3" style="color:#FF8C33">RESPEITO</h3><p class="text-gray-400 text-xs leading-relaxed">Respeitar a capacidade dos colegas, confiar que cada um faz o melhor. Respeitar o cliente como parceiro. Sem respeito, os outros valores desmoronam.</p></div></div></div></div>
+        </div>
+    </section>
+
+    <section id="praticas" class="relative py-24 px-4" style="z-index:1">
+        <div class="max-w-6xl mx-auto">
+            <div class="reveal flex items-center gap-4 mb-4 revealed"><div class="w-12 h-px bg-cb-orange"></div><span class="font-orbitron text-[10px] text-cb-orange tracking-widest">SEÇÃO 03 // PRÁTICAS</span></div>
+            <h2 class="reveal font-orbitron font-bold text-2xl md:text-3xl text-gray-100 mb-4 revealed">Ciclo de Vida e <span class="text-cb-orange">Práticas Técnicas</span></h2>
+            <p class="reveal text-gray-500 text-sm mb-10 revealed">O XP é conhecido por ser "mão na massa". Selecione uma categoria.</p>
+            <div class="reveal flex flex-wrap gap-3 mb-8 revealed">
+                <button class="tab-btn font-orbitron text-[10px] tracking-wider px-5 py-2.5 rounded-lg border border-cb-border text-gray-500 active" data-tab="codificacao"><i class="fas fa-code mr-2"></i>CODIFICAÇÃO</button>
+                <button class="tab-btn font-orbitron text-[10px] tracking-wider px-5 py-2.5 rounded-lg border border-cb-border text-gray-500" data-tab="equipe"><i class="fas fa-users mr-2"></i>EQUIPE</button>
+                <button class="tab-btn font-orbitron text-[10px] tracking-wider px-5 py-2.5 rounded-lg border border-cb-border text-gray-500" data-tab="processo"><i class="fas fa-cogs mr-2"></i>PROCESSO</button>
+            </div>
+
+            <div class="tab-content active" id="tab-codificacao">
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <div class="neon-border rounded-xl p-6 bg-cb-card">
+                        <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-lg bg-cb-orange/10 flex items-center justify-center text-cb-orange"><i class="fas fa-user-friends"></i></div><h3 class="font-orbitron text-sm text-gray-100">Pair Programming</h3></div>
+                        <p class="text-gray-400 text-xs leading-relaxed mb-4">Dois desenvolvedores, uma máquina. O <span class="text-cb-light">Piloto</span> digita enquanto o <span class="text-cb-light">Copiloto</span> revisa em tempo real, pensa em edge cases e orienta a próxima ação.</p>
+                        <div class="code-block"><span class="lang-tag">CONCEITO</span><pre><span class="cm">// Fluxo do Pair Programming</span>
+<span class="kw">Piloto</span>   → digita, foca na sintaxe
+<span class="kw">Copiloto</span> → revisa, pensa no macro
+<span class="cm">// Troca de papéis: 15-30 min</span>
+<span class="fn">trocarPapéis</span>() → qualidade ++</pre></div>
+                    </div>
+                    <div class="neon-border rounded-xl p-6 bg-cb-card">
+                        <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-lg bg-cb-orange/10 flex items-center justify-center text-cb-orange"><i class="fas fa-vial"></i></div><h3 class="font-orbitron text-sm text-gray-100">TDD</h3></div>
+                        <p class="text-gray-400 text-xs leading-relaxed mb-4"><span class="text-cb-light">Test Driven Development</span>: escrever o teste antes do código. Ciclo Red-Green-Refactor.</p>
+                        <div class="code-block"><span class="lang-tag">JavaScript</span><pre><span class="cm">// 1. RED — Teste falha</span>
+<span class="fn">test</span>(<span class="str">'soma 2+3 = 5'</span>, () =&gt; {
+  <span class="fn">expect</span>(<span class="fn">somar</span>(<span class="num">2</span>,<span class="num">3</span>)).<span class="fn">toBe</span>(<span class="num">5</span>);
+});
+<span class="cm">// 2. GREEN — Faz passar</span>
+<span class="kw">function</span> <span class="fn">somar</span>(<span class="var">a</span>,<span class="var">b</span>){<span class="kw">return</span> <span class="var">a</span>+<span class="var">b</span>}
+<span class="cm">// 3. REFACTOR — Melhora</span></pre></div>
+                    </div>
+                    <div class="neon-border rounded-xl p-6 bg-cb-card">
+                        <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-lg bg-cb-orange/10 flex items-center justify-center text-cb-orange"><i class="fas fa-recycle"></i></div><h3 class="font-orbitron text-sm text-gray-100">Refatoração</h3></div>
+                        <p class="text-gray-400 text-xs leading-relaxed mb-4">Melhoria contínua do design <span class="text-cb-light">sem alterar comportamento</span>. Com TDD, refatorar é seguro.</p>
+                        <div class="code-block"><span class="lang-tag">Python</span><pre><span class="cm"># ANTES — duplicado</span>
+<span class="kw">def</span> <span class="fn">calc</span>(val, tx):
+  <span class="kw">if</span> val&gt;<span class="num">1000</span>:<span class="kw">return</span> val*tx*<span class="num">.9</span>
+  <span class="kw">return</span> val*tx
+<span class="cm"># DEPOIS — limpo</span>
+<span class="kw">def</span> <span class="fn">desc</span>(v):<span class="kw">return</span> <span class="num">.9</span> <span class="kw">if</span> v&gt;<span class="num">1000</span> <span class="kw">else</span> <span class="num">1.0</span>
+<span class="kw">def</span> <span class="fn">calc</span>(v,t):<span class="kw">return</span> v*t*<span class="fn">desc</span>(v)</pre></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-equipe">
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <div class="neon-border rounded-xl p-6 bg-cb-card">
+                        <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-lg bg-cb-orange/10 flex items-center justify-center text-cb-orange"><i class="fas fa-unlock-alt"></i></div><h3 class="font-orbitron text-sm text-gray-100">Propriedade Coletiva</h3></div>
+                        <p class="text-gray-400 text-xs leading-relaxed mb-4">Qualquer pessoa pode modificar qualquer parte do código.</p>
+                        <div class="code-block"><span class="lang-tag">CONCEITO</span><pre><span class="cm">// Sem prop. coletiva:</span>
+<span class="var">moduloA</span> → <span class="str">"Só o João mexe"</span> <span class="cm">// ❌</span>
+<span class="cm">// Com prop. coletiva:</span>
+<span class="var">tudo</span> → <span class="str">"Time inteiro"</span> <span class="cm">// ✅</span>
+<span class="fn">qualquerDev</span>().<span class="fn">podeModificar</span>(<span class="var">qualquerParte</span>)</pre></div>
+                    </div>
+                    <div class="neon-border rounded-xl p-6 bg-cb-card">
+                        <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-lg bg-cb-orange/10 flex items-center justify-center text-cb-orange"><i class="fas fa-ruler-combined"></i></div><h3 class="font-orbitron text-sm text-gray-100">Padrões de Codificação</h3></div>
+                        <p class="text-gray-400 text-xs leading-relaxed mb-4">O código deve parecer escrito por uma <span class="text-cb-light">única pessoa</span>.</p>
+                        <div class="code-block"><span class="lang-tag">.eslintrc</span><pre>{
+  <span class="str">"rules"</span>: {
+    <span class="str">"semi"</span>: [<span class="str">"error"</span>,<span class="str">"always"</span>],
+    <span class="str">"quotes"</span>: [<span class="str">"error"</span>,<span class="str">"single"</span>],
+    <span class="str">"indent"</span>: [<span class="str">"error"</span>,<span class="num">2</span>]
+  }
+}</pre></div>
+                    </div>
+                    <div class="neon-border rounded-xl p-6 bg-cb-card">
+                        <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-lg bg-cb-orange/10 flex items-center justify-center text-cb-orange"><i class="fas fa-lightbulb"></i></div><h3 class="font-orbitron text-sm text-gray-100">Metáfora do Sistema</h3></div>
+                        <p class="text-gray-400 text-xs leading-relaxed mb-4">Visão compartilhada de como o sistema funciona.</p>
+                        <div class="code-block"><span class="lang-tag">EXEMPLO</span><pre><span class="cm">// Metáfora: "Escritório Virtual"</span>
+<span class="var">Salas</span>    → <span class="str">"Espaços reunião"</span>
+<span class="var">Usuários</span> → <span class="str">"Funcionários"</span>
+<span class="var">Agenda</span>   → <span class="str">"Recepção"</span>
+<span class="var">Notif</span>    → <span class="str">"Interfone"</span></pre></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-processo">
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <div class="neon-border rounded-xl p-6 bg-cb-card">
+                        <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-lg bg-cb-orange/10 flex items-center justify-center text-cb-orange"><i class="fas fa-chess"></i></div><h3 class="font-orbitron text-sm text-gray-100">Planning Game</h3></div>
+                        <p class="text-gray-400 text-xs leading-relaxed mb-4"><span class="text-cb-light">Negócio</span> (o que) e <span class="text-cb-light">Técnico</span> (como) negociam escopo.</p>
+                        <div class="code-block"><span class="lang-tag">FLUXO</span><pre><span class="var">cliente</span>.<span class="fn">prioriza</span>(<span class="var">stories</span>)
+<span class="var">time</span>.<span class="fn">estima</span>(<span class="var">stories</span>)
+<span class="var">r</span> = <span class="fn">negociar</span>(<span class="var">escopo</span>,<span class="var">tempo</span>)
+<span class="fn">selecionarParaSprint</span>(<span class="var">r</span>)</pre></div>
+                    </div>
+                    <div class="neon-border rounded-xl p-6 bg-cb-card">
+                        <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-lg bg-cb-orange/10 flex items-center justify-center text-cb-orange"><i class="fas fa-sync-alt"></i></div><h3 class="font-orbitron text-sm text-gray-100">Integração Contínua</h3></div>
+                        <p class="text-gray-400 text-xs leading-relaxed mb-4">Subir código várias vezes ao dia com <span class="text-cb-light">feedback instantâneo</span>.</p>
+                        <div class="code-block"><span class="lang-tag">YAML</span><pre><span class="var">steps</span>:
+  - <span class="fn">checkout</span>
+  - <span class="fn">install_deps</span>
+  - <span class="fn">run_tests</span>
+  - <span class="fn">lint</span>
+  - <span class="fn">build</span>
+  - <span class="fn">deploy_staging</span></pre></div>
+                    </div>
+                    <div class="neon-border rounded-xl p-6 bg-cb-card">
+                        <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-lg bg-cb-orange/10 flex items-center justify-center text-cb-orange"><i class="fas fa-user-tie"></i></div><h3 class="font-orbitron text-sm text-gray-100">Cliente Presente</h3></div>
+                        <p class="text-gray-400 text-xs leading-relaxed mb-4">Representante do cliente disponível <span class="text-cb-light">tempo integral</span>.</p>
+                        <div class="code-block"><span class="lang-tag">CENÁRIO</span><pre><span class="cm">// Sem cliente:</span>
+<span class="var">dev</span>.<span class="fn">assume</span>(<span class="str">"acho que é isso"</span>)<span class="cm">//❌</span>
+<span class="cm">// Com cliente:</span>
+<span class="var">dev</span>.<span class="fn">pergunta</span>(<span class="var">cliente</span>)
+<span class="var">cliente</span>.<span class="fn">responde</span>(<span class="str">"exatamente"</span>)<span class="cm">//✅</span></pre></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="comparacao" class="relative py-24 px-4" style="z-index:1">
+        <div class="max-w-5xl mx-auto">
+            <div class="reveal flex items-center gap-4 mb-4 revealed"><div class="w-12 h-px bg-cb-orange"></div><span class="font-orbitron text-[10px] text-cb-orange tracking-widest">SEÇÃO 04 // COMPARATIVO</span></div>
+            <h2 class="reveal font-orbitron font-bold text-2xl md:text-3xl text-gray-100 mb-10 revealed">XP <span class="text-cb-orange">vs</span> Scrum</h2>
+            <div class="reveal overflow-x-auto neon-border rounded-xl bg-cb-card revealed">
+                <table class="comp-table w-full text-sm">
+                    <thead><tr class="font-orbitron text-[10px] tracking-wider"><th class="text-cb-orange">CARACTERÍSTICA</th><th class="text-gray-300">SCRUM</th><th class="text-gray-300">EXTREME PROGRAMMING</th></tr></thead>
+                    <tbody>
+                        <tr><td class="text-gray-200 font-bold">Foco Principal</td><td class="text-gray-400">Gestão e organização do trabalho</td><td class="text-gray-400">Práticas de engenharia e qualidade de código</td></tr>
+                        <tr><td class="text-gray-200 font-bold">Mudanças na Sprint</td><td class="text-gray-400">Não permitidas durante a Sprint</td><td class="text-gray-400">Podem ocorrer a qualquer momento</td></tr>
+                        <tr><td class="text-gray-200 font-bold">Prioridade</td><td class="text-gray-400">Product Owner define</td><td class="text-gray-400">Cliente define e prioriza rigidamente</td></tr>
+                        <tr><td class="text-gray-200 font-bold">Testes</td><td class="text-gray-400">Recomendados</td><td class="text-gray-400">Obrigatórios — TDD é a regra</td></tr>
+                        <tr><td class="text-gray-200 font-bold">Trabalho em Par</td><td class="text-gray-400">Opcional</td><td class="text-gray-400">Recomendado como prática core</td></tr>
+                        <tr><td class="text-gray-200 font-bold">Iteração</td><td class="text-gray-400">Sprint (2-4 semanas)</td><td class="text-gray-400">Iterações menores (1-2 semanas)</td></tr>
+                        <tr><td class="text-gray-200 font-bold">Gestão</td><td class="text-gray-400">Scrum Master, PO, Time Dev</td><td class="text-gray-400">Coach, Cliente, Desenvolvedores</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="reveal mt-8 neon-border rounded-xl p-6 bg-cb-card revealed">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-lg bg-cb-orange/10 flex items-center justify-center text-cb-orange shrink-0 mt-1"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div><h4 class="text-gray-200 font-bold text-sm mb-2">Erro Comum</h4><p class="text-gray-400 text-xs leading-relaxed">Scrum gerencia o <span class="text-cb-light">"quando" e "o que"</span>, enquanto XP define o <span class="text-cb-orange">"como"</span> com ênfase brutal em qualidade técnica. Na prática, muitos times usam Scrum + XP — combinação poderosa.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="relative py-20 px-4" style="z-index:1">
+        <div class="max-w-5xl mx-auto">
+            <div class="reveal flex items-center gap-4 mb-4 revealed"><div class="w-12 h-px bg-cb-orange"></div><span class="font-orbitron text-[10px] text-cb-orange tracking-widest">SEÇÃO 05 // GRÁFICO CRUCIAL</span></div>
+            <h2 class="reveal font-orbitron font-bold text-xl md:text-2xl text-gray-100 mb-8 revealed">Custo da <span class="text-cb-orange">Mudança</span> <span class="text-gray-500 text-sm font-mono">// Interativo</span></h2>
+            <div class="reveal neon-border rounded-xl bg-cb-card p-4 md:p-6 relative revealed" id="chart-container">
+                <canvas id="costChart" style="width:100%;height:350px;display:block;cursor:crosshair" width="974" height="350"></canvas>
+                <div id="chart-tooltip" style="opacity: 0;"></div>
+                <div class="flex items-center justify-center gap-6 mt-4 text-xs">
+                    <button id="toggle-cascade" class="flex items-center gap-2 cursor-pointer transition-opacity" onclick="toggleLine(&#39;cascade&#39;)"><span class="w-4 h-0.5 inline-block rounded" style="background:#ef4444"></span><span class="text-gray-400 hover:text-red-400 transition-colors">Modelo Cascata</span></button>
+                    <button id="toggle-xp" class="flex items-center gap-2 cursor-pointer transition-opacity" onclick="toggleLine(&#39;xp&#39;)"><span class="w-4 h-0.5 inline-block rounded" style="background:#FF6B00"></span><span class="text-gray-400 hover:text-cb-orange transition-colors">Extreme Programming</span></button>
+                </div>
+                <p class="text-gray-500 text-[11px] mt-3 text-center">Passe o mouse sobre os pontos para ver os valores. Clique nas legendas para alternar linhas.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="desafios" class="relative py-24 px-4" style="z-index:1">
+        <div class="max-w-5xl mx-auto">
+            <div class="reveal flex items-center gap-4 mb-4 revealed"><div class="w-12 h-px bg-cb-orange"></div><span class="font-orbitron text-[10px] text-cb-orange tracking-widest">SEÇÃO 06 // DESAFIO PRÁTICO</span></div>
+            <h2 class="reveal font-orbitron font-bold text-2xl md:text-3xl text-gray-100 mb-3 revealed">XP em Miniatura <span class="text-cb-orange">// 1h30</span></h2>
+            <p class="reveal text-gray-500 text-sm mb-4 revealed">Desafio de código em duplas com hospedagem. Cada dupla deve documentar cada passo no Diário de Bordo justificando com valores e práticas do XP.</p>
+
+            <div class="reveal neon-border rounded-xl p-5 bg-cb-card mb-8 revealed">
+                <div class="flex flex-wrap items-center gap-3 mb-3">
+                    <span class="timer-badge bg-cb-orange/10 text-cb-orange border border-cb-orange/30"><i class="fas fa-clock"></i> 1h30 total</span>
+                    <span class="timer-badge bg-green-500/10 text-green-400 border border-green-500/30"><i class="fas fa-users"></i> Duplas</span>
+                    <span class="timer-badge bg-blue-500/10 text-blue-400 border border-blue-500/30"><i class="fas fa-robot"></i> IA permitida</span>
+                    <span class="timer-badge bg-purple-500/10 text-purple-400 border border-purple-500/30"><i class="fas fa-book"></i> Diário de Bordo obrigatório</span>
+                </div>
+                <p class="text-gray-400 text-xs leading-relaxed">As duplas podem usar IA (ChatGPT, Copilot, etc.) para gerar código, mas devem <span class="text-cb-orange">justificar cada decisão</span> no diário de bordo, explicando qual prática XP está sendo aplicada e por quê. O foco não é o código perfeito — é <span class="text-cb-orange">demonstrar compreensão da metodologia</span>.</p>
+            </div>
+
+            <div class="reveal neon-border rounded-xl bg-cb-card mb-6 overflow-hidden revealed">
+                <button class="w-full p-5 md:p-6 text-left flex items-start justify-between gap-4" onclick="toggleCh(1)">
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-lg bg-cb-orange/10 flex items-center justify-center text-cb-orange font-orbitron font-bold text-sm shrink-0">01</div>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2 mb-1">
+                                <h3 class="text-gray-100 font-bold text-sm">TDD na Prática — Biblioteca de Validação</h3>
+                                <span class="timer-badge bg-cb-orange/10 text-cb-orange border border-cb-orange/30 text-[9px]"><i class="fas fa-clock"></i> 25 min</span>
+                            </div>
+                            <p class="text-gray-500 text-xs">Criar funções de validação escrevendo testes ANTES do código. Red → Green → Refactor.</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down text-cb-orange transition-transform mt-1 shrink-0" id="ch1-arrow" style="transform: rotate(180deg);"></i>
+                </button>
+                <div class="px-5 md:px-6 pb-6" id="ch1-body">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-cb-orange text-xs font-orbitron tracking-wider mb-3">O QUE FAZER</h4>
+                            <p class="text-gray-400 text-xs leading-relaxed mb-3">Criar um arquivo <code class="text-cb-light">validacoes.js</code> (ou <code class="text-cb-light">validacoes.py</code>) com 3 funções:</p>
+                            <ul class="text-gray-400 text-xs space-y-1.5 mb-4">
+                                <li class="flex items-start gap-2"><span class="text-cb-orange mt-0.5">▸</span> <code class="text-gray-300">ehEmailValido(str)</code> — retorna true/false</li>
+                                <li class="flex items-start gap-2"><span class="text-cb-orange mt-0.5">▸</span> <code class="text-gray-300">ehCPFValido(str)</code> — retorna true/false</li>
+                                <li class="flex items-start gap-2"><span class="text-cb-orange mt-0.5">▸</span> <code class="text-gray-300">ehSenhaForte(str)</code> — min 8 chars, maiúscula, número, especial</li>
+                            </ul>
+                            <p class="text-gray-400 text-xs leading-relaxed mb-3"><span class="text-cb-orange font-bold">Regra obrigatória:</span> Para CADA função, escrever pelo menos 5 testes ANTES de implementar. Usar Jest (JS) ou unittest (Python).</p>
+                            <h4 class="text-cb-orange text-xs font-orbitron tracking-wider mb-2 mt-4">XP APLICADO</h4>
+                            <p class="text-gray-400 text-xs leading-relaxed">Valor: <span class="text-gray-200">Simplicidade</span> (implementar o mínimo para passar) + <span class="text-gray-200">Feedback</span> (testes como feedback imediato). Prática: <span class="text-gray-200">TDD</span>.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-cb-orange text-xs font-orbitron tracking-wider mb-3">DIÁRIO DE BORDO // MODELO</h4>
+                            <div class="logbook text-[11px]">
+                                <div class="logbook-header">DIÁRIO DE BORDO — DESAFIO 1 (TDD)</div>
+                                <div class="logbook-row"><div class="logbook-label">Dupla</div><div class="logbook-value">Nome1 e Nome2</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Horário</div><div class="logbook-value">00:00 — 00:25</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Papel Atual</div><div class="logbook-value">Piloto: ___ / Copiloto: ___</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Teste #1</div><div class="logbook-value">O que testei e por quê. Qual valor XP justifica.</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Resultado</div><div class="logbook-value">RED — teste falhou como esperado?</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Implementação</div><div class="logbook-value">Código mínimo escrito. Por que não fiz mais?</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Resultado</div><div class="logbook-value">GREEN — teste passou?</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Refatoração</div><div class="logbook-value">O que melhorei? Testes ainda passam?</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Uso de IA</div><div class="logbook-value">O que pedi à IA? O que mantive e o que descartei?</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Troca?</div><div class="logbook-value">Sim/Não — horário da troca de papéis</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal neon-border rounded-xl bg-cb-card mb-6 overflow-hidden revealed">
+                <button class="w-full p-5 md:p-6 text-left flex items-start justify-between gap-4" onclick="toggleCh(2)">
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-lg bg-cb-orange/10 flex items-center justify-center text-cb-orange font-orbitron font-bold text-sm shrink-0">02</div>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2 mb-1">
+                                <h3 class="text-gray-100 font-bold text-sm">Pair Programming — App de Reserva de Salas</h3>
+                                <span class="timer-badge bg-cb-orange/10 text-cb-orange border border-cb-orange/30 text-[9px]"><i class="fas fa-clock"></i> 30 min</span>
+                            </div>
+                            <p class="text-gray-500 text-xs">Construir interface funcional trocando papéis a cada 10 min. Copiloto obrigatoriamente revisa e orienta.</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down text-cb-orange transition-transform mt-1 shrink-0" id="ch2-arrow" style="transform: rotate(180deg);"></i>
+                </button>
+                <div class="px-5 md:px-6 pb-6" id="ch2-body">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-cb-orange text-xs font-orbitron tracking-wider mb-3">O QUE FAZER</h4>
+                            <p class="text-gray-400 text-xs leading-relaxed mb-3">Criar uma página HTML + CSS + JS de reserva de salas com:</p>
+                            <ul class="text-gray-400 text-xs space-y-1.5 mb-4">
+                                <li class="flex items-start gap-2"><span class="text-cb-orange mt-0.5">▸</span> Lista de salas disponíveis (Sala A, B, C)</li>
+                                <li class="flex items-start gap-2"><span class="text-cb-orange mt-0.5">▸</span> Selecionar sala + horário (8h-18h, blocos de 1h)</li>
+                                <li class="flex items-start gap-2"><span class="text-cb-orange mt-0.5">▸</span> Botão reservar — mostrar confirmação</li>
+                                <li class="flex items-start gap-2"><span class="text-cb-orange mt-0.5">▸</span> Impedir reserva duplicada do mesmo horário</li>
+                            </ul>
+                            <p class="text-gray-400 text-xs leading-relaxed mb-3"><span class="text-cb-orange font-bold">Regra obrigatória:</span> Troca de papéis a cada 10 minutos. O professor deve registrar os horários. O Copiloto NÃO pode tocar no teclado — só falar.</p>
+                            <h4 class="text-cb-orange text-xs font-orbitron tracking-wider mb-2 mt-4">XP APLICADO</h4>
+                            <p class="text-gray-400 text-xs leading-relaxed">Valor: <span class="text-gray-200">Comunicação</span> (diálogo constante) + <span class="text-gray-200">Respeito</span> (confiar no par). Prática: <span class="text-gray-200">Pair Programming</span>.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-cb-orange text-xs font-orbitron tracking-wider mb-3">DIÁRIO DE BORDO // MODELO</h4>
+                            <div class="logbook text-[11px]">
+                                <div class="logbook-header">DIÁRIO DE BORDO — DESAFIO 2 (Pair Programming)</div>
+                                <div class="logbook-row"><div class="logbook-label">Dupla</div><div class="logbook-value">Nome1 e Nome2</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Bloco 1 (0-10min)</div><div class="logbook-value">Piloto: ___ / Copiloto: ___</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Copiloto orientou</div><div class="logbook-value">Sugestões dadas, problemas apontados</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Bloco 2 (10-20min)</div><div class="logbook-value">Piloto: ___ / Copiloto: ___</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Copiloto orientou</div><div class="logbook-value">Sugestões dadas, problemas apontados</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Bloco 3 (20-30min)</div><div class="logbook-value">Piloto: ___ / Copiloto: ___</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Copiloto orientou</div><div class="logbook-value">Sugestões dadas, problemas apontados</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Dificuldade</div><div class="logbook-value">O que foi mais difícil em trabalhar em par?</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Uso de IA</div><div class="logbook-value">O que pedi? Ajudou ou atrapalhou o par?</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal neon-border rounded-xl bg-cb-card mb-6 overflow-hidden revealed">
+                <button class="w-full p-5 md:p-6 text-left flex items-start justify-between gap-4" onclick="toggleCh(3)">
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-lg bg-cb-orange/10 flex items-center justify-center text-cb-orange font-orbitron font-bold text-sm shrink-0">03</div>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2 mb-1">
+                                <h3 class="text-gray-100 font-bold text-sm">Refatoração com Segurança — Código Legado</h3>
+                                <span class="timer-badge bg-cb-orange/10 text-cb-orange border border-cb-orange/30 text-[9px]"><i class="fas fa-clock"></i> 20 min</span>
+                            </div>
+                            <p class="text-gray-500 text-xs">Refatorar código ruim usando testes como rede de segurança. Sem quebrar nada.</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down text-cb-orange transition-transform mt-1 shrink-0" id="ch3-arrow" style="transform: rotate(180deg);"></i>
+                </button>
+                <div class="px-5 md:px-6 pb-6" id="ch3-body">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-cb-orange text-xs font-orbitron tracking-wider mb-3">CÓDIGO LEGADO A REFATORAR</h4>
+                            <div class="code-block mb-4"><span class="lang-tag">ANTES — refatorar.js</span><pre><span class="kw">function</span> <span class="fn">processar</span>(d,t){
+  <span class="kw">var</span> r=<span class="num">0</span>;
+  <span class="kw">if</span>(t==<span class="str">'VIP'</span>){<span class="kw">if</span>(d&gt;<span class="num">500</span>){r=d*<span class="num">.8</span>}<span class="kw">else</span>{r=d*<span class="num">.9</span>}}
+  <span class="kw">else</span>{<span class="kw">if</span>(d&gt;<span class="num">500</span>){r=d*<span class="num">.95</span>}<span class="kw">else</span>{r=d}}
+  <span class="kw">if</span>(r&gt;<span class="num">1000</span>){r=r-<span class="num">50</span>}
+  <span class="kw">return</span> r
+}
+
+<span class="kw">function</span> <span class="fn">formatar</span>(v){
+  <span class="kw">return</span> <span class="str">"R$"</span>+v.<span class="fn">toFixed</span>(<span class="num">2</span>)
+}</pre></div>
+                            <p class="text-gray-400 text-xs leading-relaxed mb-3"><span class="text-cb-orange font-bold">Regras:</span> 1) Escrever testes que cubram TODOS os caminhos antes de tocar no código. 2) Refatorar em passos pequenos, rodando testes a cada mudança. 3) O resultado final deve ter o MESMO comportamento.</p>
+                            <h4 class="text-cb-orange text-xs font-orbitron tracking-wider mb-2 mt-4">XP APLICADO</h4>
+                            <p class="text-gray-400 text-xs leading-relaxed">Valor: <span class="text-gray-200">Coragem</span> (mudar código que funciona) + <span class="text-gray-200">Simplicidade</span>. Prática: <span class="text-gray-200">Refatoração</span> com rede de testes.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-cb-orange text-xs font-orbitron tracking-wider mb-3">DIÁRIO DE BORDO // MODELO</h4>
+                            <div class="logbook text-[11px]">
+                                <div class="logbook-header">DIÁRIO DE BORDO — DESAFIO 3 (Refatoração)</div>
+                                <div class="logbook-row"><div class="logbook-label">Dupla</div><div class="logbook-value">Nome1 e Nome2</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Testes escritos</div><div class="logbook-value">Listar cada cenário testado e por quê</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Smells encontrados</div><div class="logbook-value">Nomes ruins, aninhamento, duplicação, etc.</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Refatoração 1</div><div class="logbook-value">O que mudei. Testes passaram? Justificativa.</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Refatoração 2</div><div class="logbook-value">O que mudei. Testes passaram? Justificativa.</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Refatoração N</div><div class="logbook-value">... até ficar satisfatório</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Comportamento</div><div class="logbook-value">Os resultados são idênticos ao original?</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Uso de IA</div><div class="logbook-value">A IA sugeriu algo que quebraria? O que descartei?</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal neon-border rounded-xl bg-cb-card mb-6 overflow-hidden revealed">
+                <button class="w-full p-5 md:p-6 text-left flex items-start justify-between gap-4" onclick="toggleCh(4)">
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-lg bg-cb-orange/10 flex items-center justify-center text-cb-orange font-orbitron font-bold text-sm shrink-0">04</div>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2 mb-1">
+                                <h3 class="text-gray-100 font-bold text-sm">Integração Contínua + Hospedagem</h3>
+                                <span class="timer-badge bg-cb-orange/10 text-cb-orange border border-cb-orange/30 text-[9px]"><i class="fas fa-clock"></i> 15 min</span>
+                                <span class="timer-badge bg-green-500/10 text-green-400 border border-green-500/30 text-[9px]"><i class="fas fa-rocket"></i> Entrega</span>
+                            </div>
+                            <p class="text-gray-500 text-xs">Subir no GitHub, configurar CI básico e hospedar. O software precisa estar ONLINE ao final.</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down text-cb-orange transition-transform mt-1 shrink-0" id="ch4-arrow"></i>
+                </button>
+                <div class="hidden px-5 md:px-6 pb-6" id="ch4-body">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-cb-orange text-xs font-orbitron tracking-wider mb-3">O QUE FAZER</h4>
+                            <ol class="text-gray-400 text-xs space-y-2 mb-4 list-decimal list-inside">
+                                <li>Subir todo o código dos desafios 1-3 em um repositório GitHub</li>
+                                <li>Configurar <code class="text-cb-light">GitHub Actions</code> para rodar os testes automaticamente no push</li>
+                                <li>Hospedar a página de Reserva de Salas no <code class="text-cb-light">GitHub Pages</code> (grátis)</li>
+                                <li>Enviar o link do site ONLINE ao professor</li>
+                            </ol>
+                            <p class="text-gray-400 text-xs leading-relaxed mb-3"><span class="text-cb-orange font-bold">Entrega obrigatória:</span> Link do GitHub + Link do site hospedado + Diário de Bordo completo (dos 4 desafios) em PDF no repo.</p>
+                            <h4 class="text-cb-orange text-xs font-orbitron tracking-wider mb-2 mt-4">XP APLICADO</h4>
+                            <p class="text-gray-400 text-xs leading-relaxed">Valor: <span class="text-gray-200">Feedback</span> (CI dá feedback automático) + <span class="text-gray-200">Coragem</span> (colocar código público). Prática: <span class="text-gray-200">Integração Contínua</span>.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-cb-orange text-xs font-orbitron tracking-wider mb-3">DIÁRIO DE BORDO // MODELO</h4>
+                            <div class="logbook text-[11px]">
+                                <div class="logbook-header">DIÁRIO DE BORDO — DESAFIO 4 (CI + Hospedagem)</div>
+                                <div class="logbook-row"><div class="logbook-label">Dupla</div><div class="logbook-value">Nome1 e Nome2</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Repo URL</div><div class="logbook-value">https://github.com/___</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Site URL</div><div class="logbook-value">https://___.github.io/___</div></div>
+                                <div class="logbook-row"><div class="logbook-label">CI Config</div><div class="logbook-value">O que o workflow faz? Cole aqui o YAML.</div></div>
+                                <div class="logbook-row"><div class="logbook-label">CI passou?</div><div class="logbook-value">Sim/Não — se não, o que corrigiu?</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Problemas</div><div class="logbook-value">Dificuldades com git, CI ou hospedagem</div></div>
+                                <div class="logbook-row"><div class="logbook-label">Reflexão Final</div><div class="logbook-value">Qual valor XP mais apliquei hoje? Justifique.</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal neon-border rounded-xl p-6 bg-cb-card revealed">
+                <h4 class="font-orbitron text-xs text-cb-orange tracking-wider mb-5">CRONOGRAMA DA AULA</h4>
+                <div class="space-y-0">
+                    <div class="flex items-stretch gap-3"><div class="w-16 shrink-0 text-right text-[10px] text-cb-orange pt-2.5 font-orbitron">0:00</div><div class="flex-1 border-l-2 border-cb-orange/30 pl-4 pb-5 relative"><div class="absolute left-[-5px] top-2.5 w-2 h-2 rounded-full bg-cb-orange"></div><div class="text-gray-200 text-xs font-bold mb-1">Desafio 1 — TDD (25 min)</div><div class="text-gray-500 text-[10px]">Biblioteca de validação. Testes primeiro, código depois.</div></div></div>
+                    <div class="flex items-stretch gap-3"><div class="w-16 shrink-0 text-right text-[10px] text-cb-orange pt-2.5 font-orbitron">0:25</div><div class="flex-1 border-l-2 border-cb-orange/30 pl-4 pb-5 relative"><div class="absolute left-[-5px] top-2.5 w-2 h-2 rounded-full bg-cb-orange"></div><div class="text-gray-200 text-xs font-bold mb-1">Desafio 2 — Pair Programming (30 min)</div><div class="text-gray-500 text-[10px]">App de reservas. Troca de papéis a cada 10 min.</div></div></div>
+                    <div class="flex items-stretch gap-3"><div class="w-16 shrink-0 text-right text-[10px] text-cb-orange pt-2.5 font-orbitron">0:55</div><div class="flex-1 border-l-2 border-cb-orange/30 pl-4 pb-5 relative"><div class="absolute left-[-5px] top-2.5 w-2 h-2 rounded-full bg-cb-orange"></div><div class="text-gray-200 text-xs font-bold mb-1">Desafio 3 — Refatoração (20 min)</div><div class="text-gray-500 text-[10px]">Código legado. Testes como rede de segurança.</div></div></div>
+                    <div class="flex items-stretch gap-3"><div class="w-16 shrink-0 text-right text-[10px] text-cb-orange pt-2.5 font-orbitron">1:15</div><div class="flex-1 border-l-2 border-cb-orange pl-4 pb-1 relative"><div class="absolute left-[-5px] top-2.5 w-2 h-2 rounded-full bg-cb-glow" style="box-shadow:0 0 8px #FF4500"></div><div class="text-gray-200 text-xs font-bold mb-1">Desafio 4 — CI + Hospedagem (15 min)</div><div class="text-gray-500 text-[10px]">GitHub, Actions, Pages. Site ONLINE ao final.</div></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="quiz" class="relative py-24 px-4" style="z-index:1">
+        <div class="max-w-4xl mx-auto">
+            <div class="reveal flex items-center gap-4 mb-4"><div class="w-12 h-px bg-cb-orange"></div><span class="font-orbitron text-[10px] text-cb-orange tracking-widest">SEÇÃO 07 // AVALIAÇÃO</span></div>
+            <h2 class="reveal font-orbitron font-bold text-2xl md:text-3xl text-gray-100 mb-4">Quiz <span class="text-cb-orange">INTERATIVO</span></h2>
+            <p class="reveal text-gray-500 text-sm mb-10">30 questões de múltipla escolha (A a E). Respostas reveladas ao final.</p>
+
+            <div id="quiz-start" class="reveal neon-border rounded-xl bg-cb-card p-8 text-center">
+                <div class="w-20 h-20 rounded-full bg-cb-orange/10 flex items-center justify-center text-cb-orange text-3xl mx-auto mb-6 pulse-glow"><i class="fas fa-terminal"></i></div>
+                <h3 class="font-orbitron text-xl text-gray-100 mb-3">Modo Avaliação</h3>
+                <p class="text-gray-400 text-sm mb-2">30 questões // 5 alternativas cada // Sem tempo limite</p>
+                <p class="text-gray-500 text-xs mb-6">As respostas serão reveladas apenas ao final.</p>
+                <button onclick="startQuiz()" class="px-8 py-3 bg-cb-orange text-cb-black font-orbitron font-bold text-sm rounded-lg tracking-wider hover:bg-cb-light transition-colors">INICIAR QUIZ</button>
+            </div>
+
+            <div id="quiz-area" class="hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-cb-orange font-orbitron text-xs" id="quiz-progress-text">01 / 30</span>
+                    <span class="text-gray-500 text-xs" id="quiz-score-text">Respondidas: 0</span>
+                </div>
+                <div class="w-full h-1.5 bg-cb-card rounded-full mb-8 overflow-hidden"><div class="h-full bg-gradient-to-r from-cb-glow to-cb-orange rounded-full transition-all duration-300" id="quiz-progress-bar" style="width:3.33%"></div></div>
+                <div class="neon-border rounded-xl bg-cb-card p-6 md:p-8 mb-6">
+                    <p class="text-gray-200 text-sm leading-relaxed mb-6" id="quiz-question"></p>
+                    <div class="space-y-3" id="quiz-options"></div>
+                </div>
+                <div class="flex justify-between items-center">
+                    <button onclick="prevQ()" class="px-5 py-2 border border-cb-border text-gray-400 rounded-lg text-xs font-orbitron hover:border-cb-orange/50 hover:text-cb-orange transition-colors" id="quiz-prev-btn"><i class="fas fa-arrow-left mr-2"></i>ANTERIOR</button>
+                    <div class="flex gap-1.5 flex-wrap justify-center" id="quiz-dots"></div>
+                    <button onclick="nextQ()" class="px-5 py-2 bg-cb-orange/20 border border-cb-orange/50 text-cb-orange rounded-lg text-xs font-orbitron hover:bg-cb-orange/30 transition-colors" id="quiz-next-btn">PRÓXIMA<i class="fas fa-arrow-right ml-2"></i></button>
+                </div>
+            </div>
+
+            <div id="quiz-result" class="hidden neon-border rounded-xl bg-cb-card p-8">
+                <div class="text-center mb-8">
+                    <div class="w-24 h-24 rounded-full bg-cb-orange/10 flex items-center justify-center text-cb-orange text-4xl mx-auto mb-4" id="result-icon"></div>
+                    <h3 class="font-orbitron text-2xl text-gray-100 mb-2" id="result-title"></h3>
+                    <p class="text-gray-400 text-sm" id="result-subtitle"></p>
+                </div>
+                <div class="flex justify-center gap-10 mb-8">
+                    <div class="text-center"><div class="text-3xl font-orbitron font-bold text-green-400" id="result-correct">0</div><div class="text-gray-500 text-xs mt-1">Corretas</div></div>
+                    <div class="text-center"><div class="text-3xl font-orbitron font-bold text-red-400" id="result-wrong">0</div><div class="text-gray-500 text-xs mt-1">Erradas</div></div>
+                    <div class="text-center"><div class="text-3xl font-orbitron font-bold text-gray-500" id="result-blank">0</div><div class="text-gray-500 text-xs mt-1">Em branco</div></div>
+                </div>
+                <div class="w-full h-3 bg-cb-black rounded-full mb-4 overflow-hidden"><div class="h-full rounded-full transition-all duration-1000" id="result-bar"></div></div>
+                <p class="text-center text-gray-400 text-sm mb-6" id="result-percent"></p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button onclick="reviewQuiz()" class="px-6 py-2.5 border border-cb-orange/50 text-cb-orange rounded-lg text-xs font-orbitron hover:bg-cb-orange/10 transition-colors"><i class="fas fa-search mr-2"></i>REVISAR RESPOSTAS</button>
+                    <button onclick="restartQuiz()" class="px-6 py-2.5 bg-cb-orange text-cb-black rounded-lg text-xs font-orbitron font-bold hover:bg-cb-light transition-colors"><i class="fas fa-redo mr-2"></i>REFAZER</button>
+                </div>
+            </div>
+
+            <div id="quiz-review" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-orbitron text-lg text-gray-100">Revisão de Respostas</h3>
+                    <button onclick="backToResult()" class="px-4 py-2 border border-cb-border text-gray-400 rounded-lg text-xs font-orbitron hover:border-cb-orange/50 transition-colors"><i class="fas fa-arrow-left mr-2"></i>VOLTAR</button>
+                </div>
+                <div id="review-container" class="space-y-4"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="relative py-20 px-4" style="z-index:1">
+        <div class="max-w-4xl mx-auto">
+            <div class="reveal neon-border rounded-xl bg-cb-card p-8 md:p-10">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="w-12 h-12 rounded-lg bg-cb-orange/10 flex items-center justify-center text-cb-orange text-xl shrink-0"><i class="fas fa-brain"></i></div>
+                    <div><h3 class="font-orbitron text-lg text-gray-100 mb-2">Reflexão Final</h3><p class="text-cb-orange text-[10px] tracking-wider">DISCUSSÃO // 10 MINUTOS</p></div>
+                </div>
+                <blockquote class="border-l-2 border-cb-orange pl-6 mb-6"><p class="text-gray-300 text-sm leading-relaxed italic">"Qual prática do XP vocês acham mais difícil de implementar no mercado hoje?"</p></blockquote>
+                <p class="text-gray-400 text-xs leading-relaxed mb-4">Geralmente a resposta é <span class="text-cb-light">Pair Programming</span> (gestores veem dois na mesma máquina como desperdício) ou <span class="text-cb-light">Cliente Presente</span> (nem todo cliente pode se dedicar em tempo integral).</p>
+                <p class="text-gray-400 text-xs leading-relaxed">O XP não é apenas sobre rapidez — é sobre criar um ambiente onde a <span class="text-cb-orange font-bold">mudança não é cara</span> e a <span class="text-cb-orange font-bold">qualidade é inegociável</span>.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="relative py-14 px-4 border-t border-cb-border" style="z-index:1">
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="font-orbitron text-xs text-cb-orange tracking-widest mb-4">XP://EXTREME_PROGRAMMING</div>
+            <p class="text-gray-200 text-sm mb-1">Prof. MSc. Luis Fernando dos Santos Pires</p>
+            <p class="text-gray-500 text-xs mb-4">Material educacional // Engenharia de Software // Metodologias Ágeis</p>
+            <p class="text-gray-600 text-[10px]">2025 // Cyberpunk Edition</p>
+        </div>
+    </footer>
+
+    <button id="back-top" onclick="window.scrollTo({top:0,behavior:&#39;smooth&#39;})" class="fixed bottom-6 right-6 w-10 h-10 rounded-lg bg-cb-orange/20 border border-cb-orange/40 text-cb-orange flex items-center justify-center z-50 opacity-0 pointer-events-none transition-all duration-300 hover:bg-cb-orange/30" aria-label="Voltar ao topo" style="opacity: 1; pointer-events: auto;"><i class="fas fa-arrow-up"></i></button>
+    <div id="toast" class="toast"></div>
+
+    <script>
+    /* =========================================
+       DADOS DOS VALORES
+    ========================================= */
+    const valuesData = [
+        { icon:'fa-comments', title:'Comunicação', color:'#FF6B00',
+          front:'Olho no olho, feedback constante.',
+          back:'No XP, a comunicação face-a-face é prioridade absoluta. Documentação existe, mas conversas diretas resolvem problemas mais rápido. O valor está na troca humana.' },
+        { icon:'fa-minimize', title:'Simplicidade', color:'#FF8C33',
+          front:'Fazer apenas o necessário para hoje.',
+          back:'Não antecipe necessidades futuras. YAGNI: You Aren\'t Gonna Need It. Código simples é mais fácil de mudar, testar e entender.' },
+        { icon:'fa-rotate', title:'Feedback', color:'#FF4500',
+          front:'Ciclos curtos de entrega.',
+          back:'Entregas frequentes = feedback frequente = direção correta. Testes, demos ao cliente, CI — tudo gera loops rápidos de feedback.' },
+        { icon:'fa-shield-halved', title:'Coragem', color:'#FF6B00',
+          front:'Corrigir erros rápido. Dizer não.',
+          back:'Coragem para refatorar código ruim, dizer não a prazos inviáveis, descartar código que não funciona. Coragem disciplinada.' },
+        { icon:'fa-handshake', title:'Respeito', color:'#FF8C33',
+          front:'Entre o time e com o cliente.',
+          back:'Respeitar a capacidade dos colegas, confiar que cada um faz o melhor. Respeitar o cliente como parceiro. Sem respeito, os outros valores desmoronam.' }
+    ];
+
+    /* =========================================
+       DADOS DO QUIZ (30 questões)
+    ========================================= */
+    const quizData = [
+        { q:"Kent Beck criou o Extreme Programming durante o desenvolvimento de qual projeto?", o:["Projeto Manhattan na Microsoft","Sistema de Compensação C3 na Chrysler","Projeto Aurora na IBM","Sistema Apollo na NASA","Projeto Omega no Google"], a:1 },
+        { q:"Por que o XP é chamado de 'Extreme'?", o:["Porque usa linguagens de programação extremas","Porque exige jornadas de trabalho extensas","Porque leva práticas benéficas de desenvolvimento ao extremo","Porque é usado apenas em projetos extremamente complexos","Porque foi criado sob condições extremas de pressão"], a:2 },
+        { q:"No XP, o valor 'Simplicidade' significa:", o:["Usar apenas tecnologias simples e antigas","Fazer apenas o necessário para hoje, sem antecipar necessidades futuras","Reduzir o tamanho da equipe ao mínimo possível","Simplificar a documentação ao máximo","Usar apenas estruturas de dados básicas"], a:1 },
+        { q:"O valor 'Coragem' no XP se manifesta quando:", o:["O time decide abandonar o projeto","O desenvolvedor trabalha sozinho para ser mais rápido","O time corrige erros rapidamente e diz não a requisitos inviáveis","O cliente aceita qualquer entrega sem questionar","O gerente impõe prazos irreais para motivar o time"], a:2 },
+        { q:"A 'Comunicação' no XP difere de modelos tradicionais porque:", o:["Usa apenas comunicação escrita formal","Prioriza documentação extensiva sobre conversas","Valoriza o contato olho no olho e feedback constante","Elimina toda comunicação para evitar ruídos","Usa apenas ferramentas de chat assíncronas"], a:2 },
+        { q:"No Pair Programming, os papéis de Piloto e Copiloto significam:", o:["Piloto gerencia o projeto e Copiloto testa o código","Piloto digita o código e Copiloto revisa em tempo real","Piloto escreve testes e Copiloto escreve produção","Piloto define requisitos e Copiloto implementa","Piloto faz deploy e Copiloto monitora produção"], a:1 },
+        { q:"A sequência correta do ciclo TDD é:", o:["Código → Teste → Refatoração","Teste → Código → Refatoração","Refatoração → Teste → Código","Código → Refatoração → Teste","Teste → Refatoração → Código"], a:1 },
+        { q:"Em TDD, a fase 'Red' significa que:", o:["O código está otimizado para performance","O teste falha porque o código ainda não existe","O teste passou com sucesso","O código foi refatorado com segurança","O requisito foi rejeitado pelo cliente"], a:1 },
+        { q:"Refatoração no XP deve ser feita:", o:["Apenas no final do projeto","Em um sprint separado dedicado exclusivamente","Continuamente, sem alterar o comportamento","Apenas quando há bugs críticos","Somente por desenvolvedores seniores"], a:2 },
+        { q:"'Propriedade Coletiva' no XP significa que:", o:["O código pertence legalmente à empresa","Qualquer desenvolvedor pode modificar qualquer parte do código","O cliente é dono intelectual do código","O código é de domínio público após deploy","Apenas o líder técnico modifica módulos críticos"], a:1 },
+        { q:"'Padrões de Codificação' no XP visa garantir que:", o:["O código pareça escrito por uma única pessoa","O time siga padrões ISO de qualidade","Design patterns sejam usados em tudo","Cada linha tenha documentação","Dev juniores não escrevam sozinhos"], a:0 },
+        { q:"A 'Metáfora do Sistema' no XP é:", o:["Uma figura de linguagem para documentação","Uma visão compartilhada que guia decisões","Um design pattern arquitetural","Uma ferramenta UML obrigatória","Um sinônimo para arquitetura do sistema"], a:1 },
+        { q:"No Planning Game, quem decide o que será feito?", o:["Apenas o cliente define prioridades","Apenas os desenvolvedores escolhem tarefas","Negócio e técnico negociam escopo e estimativas","O gerente decide sozinho","Um algoritmo automatizado"], a:2 },
+        { q:"A Integração Contínua no XP exige que:", o:["O código seja integrado uma vez por semana","O código seja submetido várias vezes ao dia com testes","A integração seja quando todos concordam","O processo seja manual e cuidadoso","Apenas uma branch exista"], a:1 },
+        { q:"'Cliente Presente' no XP significa que:", o:["O cliente assiste fisicamente o time trabalhar","Um representante está disponível em tempo integral","O cliente escreve código com os devs","Reuniões diárias obrigatórias","O cliente assina cada linha antes do deploy"], a:1 },
+        { q:"Comparando XP e Scrum, qual afirmativa é CORRETA?", o:["Scrum foca em engenharia; XP foca em gestão","Scrum não permite mudanças na sprint; XP permite se o par aceitar","Scrum exige TDD obrigatório; XP torna opcional","Scrum usa sprints; XP não tem iterações","São essencialmente idênticos"], a:1 },
+        { q:"No XP, os testes automatizados são:", o:["Recomendados mas opcionais","De responsabilidade exclusiva do QA","Obrigatórios, TDD é a regra fundamental","Feitos apenas no final da sprint","Escritos pelo cliente"], a:2 },
+        { q:"No Scrum, quem define a prioridade do Product Backlog?", o:["O Scrum Master","O Product Owner","A equipe por consenso","O cliente diretamente","O gerente de projetos"], a:1 },
+        { q:"O gráfico do Custo da Mudança no XP difere do cascata porque:", o:["No XP, o custo permanece baixo e constante","No XP, o custo cresce mais rápido","No XP, não existe custo de mudança","No XP, o custo é zero após o primeiro sprint","No XP, só cresce após deploy"], a:0 },
+        { q:"No modelo cascata, o custo da mudança:", o:["É constante e previsível","Diminui com o tempo","Cresce exponencialmente quanto mais tarde","É zero se a mudança for pequena","É igual ao XP"], a:2 },
+        { q:"Uma User Story no XP tipicamente segue:", o:["'Como [papel], quero [func] para [benefício]'","'O sistema deve [requisito detalhado]'","'Caso [cond], então [ação]'","'Dado [ctx], quando [evt], então [res]'","'Requisito: [desc técnica completa]'"], a:0 },
+        { q:"No XP, a troca de papéis no Pair Programming ocorre:", o:["Uma vez por dia","Uma vez por sprint","Frequentemente, a cada 15-30 minutos","Quando o piloto sinaliza cansaço","Nunca — papéis fixos"], a:2 },
+        { q:"Qual prática ajuda a evitar o 'integration hell'?", o:["Propriedade Coletiva","Integração Contínua com builds automatizados","Metáfora do Sistema","Cliente Presente","Planning Game"], a:1 },
+        { q:"Se um requisito compromete a qualidade, qual valor justifica dizer 'não'?", o:["Comunicação","Simplicidade","Feedback","Coragem","Respeito"], a:3 },
+        { q:"No XP, 'Feedback' é obtido principalmente por:", o:["Relatórios mensais detalhados","Ciclos curtos com software funcionando","Pesquisas anuais de satisfação","Reuniões semanais de status","Documentação trimestral"], a:1 },
+        { q:"A automação de testes é crucial porque:", o:["Elimina a necessidade de devs humanos","Permite mudanças frequentes com segurança","Reduz custo de hardware","É requisito legal","Substitui code review"], a:1 },
+        { q:"Maior dificuldade prática de 'Cliente Presente' é:", o:["Clientes não sabem usar computadores","Nem todo cliente pode se dedicar em tempo integral","Clientes preferem não ver o código","É legalmente proibido","NDA impede colaboração"], a:1 },
+        { q:"No ciclo TDD, quando ocorre a refatoração?", o:["Antes de escrever o teste","Depois que o teste passa (Green)","Durante a escrita do teste","No início do próximo sprint","Após o deploy"], a:1 },
+        { q:"Uma equipe XP que NÃO faz Pair Programming está:", o:["Praticando XP corretamente","Violando um princípio central","Praticando Scrum","Melhorando produtividade individual","Praticando Kanban"], a:1 },
+        { q:"ENADE: Uma empresa adotou XP. Após 3 meses a qualidade melhorou, mas o cliente reclama que não sabe o que está sendo entregue. O problema é:", o:["XP não prevê comunicação com cliente","A equipe não está praticando Cliente Presente e feedback adequado","TDD impede visibilidade do progresso","Pair Programming isola a equipe","CI gera instabilidade"], a:1 }
+    ];
+
+    let currentQ=0, userAnswers=new Array(30).fill(-1), quizFinished=false;
+
+    /* =========================================
+       INICIALIZAÇÃO
+    ========================================= */
+    document.addEventListener('DOMContentLoaded',()=>{
+        renderValueCards(); initParticles(); initScrollReveal();
+        initNavScroll(); initTyping(); initTabs(); initMobileMenu();
+        setupChart();
+    });
+
+    /* =========================================
+       PARTÍCULAS
+    ========================================= */
+    function initParticles(){
+        const c=document.getElementById('particles'),x=c.getContext('2d');
+        let ps=[];const r=()=>{c.width=innerWidth;c.height=innerHeight};
+        r();addEventListener('resize',r);
+        for(let i=0;i<55;i++)ps.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.2+.4,dx:(Math.random()-.5)*.35,dy:(Math.random()-.5)*.35,o:Math.random()*.35+.08});
+        !function f(){x.clearRect(0,0,c.width,c.height);
+        ps.forEach(p=>{p.x+=p.dx;p.y+=p.dy;if(p.x<0)p.x=c.width;if(p.x>c.width)p.x=0;if(p.y<0)p.y=c.height;if(p.y>c.height)p.y=0;
+            x.beginPath();x.arc(p.x,p.y,Math.max(.1,p.r),0,Math.PI*2);x.fillStyle='rgba(255,107,0,'+p.o+')';x.fill()});
+        for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++){
+            const dx=ps[i].x-ps[j].x,dy=ps[i].y-ps[j].y,d=Math.sqrt(dx*dx+dy*dy);
+            if(d<110){x.beginPath();x.moveTo(ps[i].x,ps[i].y);x.lineTo(ps[j].x,ps[j].y);
+            x.strokeStyle='rgba(255,107,0,'+(0.05*(1-d/110))+')';x.lineWidth=.5;x.stroke()}}
+        requestAnimationFrame(f)}();
+    }
+
+    /* =========================================
+       SCROLL REVEAL
+    ========================================= */
+    function initScrollReveal(){
+        const o=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('revealed')}),{threshold:.06});
+        document.querySelectorAll('.reveal').forEach(el=>o.observe(el));
+    }
+
+    /* =========================================
+       NAVEGAÇÃO
+    ========================================= */
+    function initNavScroll(){
+        const n=document.getElementById('main-nav'),b=document.getElementById('back-top'),p=document.getElementById('read-progress');
+        addEventListener('scroll',()=>{
+            const y=scrollY;
+            n.style.borderBottomColor=y>50?'rgba(255,107,0,.12)':'transparent';
+            b.style.opacity=y>500?'1':'0';b.style.pointerEvents=y>500?'auto':'none';
+            const h=document.documentElement.scrollHeight-innerHeight;
+            p.style.width=h>0?(y/h*100)+'%':'0%';
+        });
+        document.querySelectorAll('a[href^="#"]').forEach(a=>{
+            a.addEventListener('click',e=>{e.preventDefault();
+                const t=document.querySelector(a.getAttribute('href'));
+                if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+    }
+    function initMobileMenu(){document.getElementById('mobile-menu-btn').addEventListener('click',()=>document.getElementById('mobile-menu').classList.toggle('hidden'))}
+
+    /* =========================================
+       EFEITO DE DIGITAÇÃO
+    ========================================= */
+    function initTyping(){
+        const el=document.getElementById('hero-subtitle'),t='Leve as boas práticas de desenvolvimento ao extremo. Onde a mudança não é cara e a qualidade é inegociável.';
+        let i=0;setTimeout(function f(){if(i<t.length){el.textContent+=t.charAt(i);i++;setTimeout(f,35)}else el.classList.remove('typing-cursor')},700);
+    }
+
+    /* =========================================
+       CARDS DE VALORES
+    ========================================= */
+    function renderValueCards(){
+        const g=document.getElementById('values-grid');
+        valuesData.forEach(v=>{
+            const c=document.createElement('div');c.className='flip-card reveal';c.style.height='255px';
+            c.onclick=()=>c.classList.toggle('flipped');
+            c.innerHTML='<div class="flip-inner"><div class="flip-front neon-border bg-cb-card flex flex-col items-center justify-center p-5 text-center"><div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl mb-3" style="background:'+v.color+'12;color:'+v.color+'"><i class="fas '+v.icon+'"></i></div><h3 class="font-orbitron text-sm text-gray-100 mb-2">'+v.title+'</h3><p class="text-gray-500 text-xs leading-relaxed">'+v.front+'</p><div class="mt-3 text-cb-orange text-[9px] tracking-widest">CLIQUE PARA DETALHES</div></div><div class="flip-back neon-border bg-cb-card flex flex-col justify-center p-5" style="border-color:'+v.color+'35"><h3 class="font-orbitron text-[10px] mb-3" style="color:'+v.color+'">'+v.title.toUpperCase()+'</h3><p class="text-gray-400 text-xs leading-relaxed">'+v.back+'</p></div></div>';
+            g.appendChild(c);
+        });
+    }
+
+    /* =========================================
+       TABS
+    ========================================= */
+    function initTabs(){
+        document.querySelectorAll('.tab-btn').forEach(b=>{
+            b.addEventListener('click',()=>{
+                document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+                b.classList.add('active');document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+            });
+        });
+    }
+
+    /* =========================================
+       GRÁFICO INTERATIVO (Canvas simples)
+    ========================================= */
+    var chartLinesVisible = { cascade: true, xp: true };
+    var chartAnim = 0;
+    var chartAnimRunning = false;
+    var chartHover = null;
+
+    var chartLabels = ['Início','Design','Código','Teste','Deploy','Produção','Manutenção'];
+    var chartCascade = [8, 12, 20, 35, 55, 80, 100];
+    var chartXP = [10, 11, 12, 13, 14, 15, 16];
+
+    function setupChart() {
+        var canvas = document.getElementById('costChart');
+        if (!canvas) return;
+
+        // Observar para iniciar animação quando visível
+        var obs = new IntersectionObserver(function(entries) {
+            if (entries[0].isIntersecting && !chartAnimRunning) {
+                chartAnimRunning = true;
+                animateChart();
+            }
+        }, { threshold: 0.3 });
+        obs.observe(canvas);
+
+        // Hover
+        canvas.addEventListener('mousemove', function(e) {
+            var rect = canvas.getBoundingClientRect();
+            var mx = e.clientX - rect.left;
+            var my = e.clientY - rect.top;
+            var dpr = window.devicePixelRatio || 1;
+            mx = mx * dpr;
+            my = my * dpr;
+            var W = canvas.width;
+            var H = canvas.height;
+            var pad = { t: 35*dpr, r: 30*dpr, b: 45*dpr, l: 55*dpr };
+            var gW = W - pad.l - pad.r;
+            var gH = H - pad.t - pad.b;
+
+            chartHover = null;
+            var lines = [
+                { key: 'cascade', data: chartCascade, color: '#ef4444', name: 'Cascata' },
+                { key: 'xp', data: chartXP, color: '#FF6B00', name: 'XP' }
+            ];
+            for (var li = 0; li < lines.length; li++) {
+                if (!chartLinesVisible[lines[li].key]) continue;
+                var data = lines[li].data;
+                for (var i = 0; i < data.length; i++) {
+                    var px = pad.l + (gW / 6) * i;
+                    var py = pad.t + gH - (data[i] / 110) * gH * chartAnim;
+                    var dist = Math.sqrt((mx - px) * (mx - px) + (my - py) * (my - py));
+                    if (dist < 18 * dpr) {
+                        chartHover = { key: lines[li].key, idx: i, val: data[i], px: px, py: py, color: lines[li].color, name: lines[li].name };
+                    }
+                }
+            }
+
+            // Tooltip
+            var tooltip = document.getElementById('chart-tooltip');
+            if (chartHover) {
+                tooltip.innerHTML = '<span style="color:' + chartHover.color + ';font-weight:bold">' + chartHover.name + '</span> — ' + chartLabels[chartHover.idx] + '<br>Custo relativo: <strong>' + chartHover.val + '%</strong>';
+                tooltip.style.opacity = '1';
+                var tx = chartHover.px / dpr + 15;
+                var ty = chartHover.py / dpr - 45;
+                if (tx + 170 > rect.width) tx = chartHover.px / dpr - 180;
+                if (ty < 0) ty = chartHover.py / dpr + 15;
+                tooltip.style.left = tx + 'px';
+                tooltip.style.top = ty + 'px';
+            } else {
+                tooltip.style.opacity = '0';
+            }
+            drawChart();
+        });
+
+        canvas.addEventListener('mouseleave', function() {
+            chartHover = null;
+            document.getElementById('chart-tooltip').style.opacity = '0';
+            drawChart();
+        });
+
+        // Redesenhar ao redimensionar
+        window.addEventListener('resize', function() { drawChart(); });
+        drawChart();
+    }
+
+    function animateChart() {
+        if (chartAnim < 1) {
+            chartAnim = Math.min(1, chartAnim + 0.02);
+            drawChart();
+            requestAnimationFrame(animateChart);
+        }
+    }
+
+    function toggleLine(key) {
+        chartLinesVisible[key] = !chartLinesVisible[key];
+        document.getElementById('toggle-' + key).style.opacity = chartLinesVisible[key] ? '1' : '0.3';
+        drawChart();
+    }
+
+    function drawChart() {
+        var canvas = document.getElementById('costChart');
+        if (!canvas) return;
+        var dpr = window.devicePixelRatio || 1;
+        var rect = canvas.getBoundingClientRect();
+        var W = rect.width * dpr;
+        var H = rect.height * dpr;
+        canvas.width = W;
+        canvas.height = H;
+        var ctx = canvas.getContext('2d');
+        var pad = { t: 35*dpr, r: 30*dpr, b: 45*dpr, l: 55*dpr };
+        var gW = W - pad.l - pad.r;
+        var gH = H - pad.t - pad.b;
+
+        // Grid
+        ctx.strokeStyle = 'rgba(255,107,0,0.06)';
+        ctx.lineWidth = 1;
+        for (var i = 0; i <= 5; i++) {
+            var y = pad.t + (gH / 5) * i;
+            ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+        }
+        for (var i = 0; i <= 6; i++) {
+            var x = pad.l + (gW / 6) * i;
+            ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, H - pad.b); ctx.stroke();
+        }
+
+        // Eixos
+        ctx.strokeStyle = 'rgba(255,107,0,0.25)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(pad.l, pad.t - 5*dpr); ctx.lineTo(pad.l, H - pad.b); ctx.lineTo(W - pad.r + 5*dpr, H - pad.b); ctx.stroke();
+
+        // Labels Y
+        ctx.fillStyle = '#555';
+        ctx.font = (10 * dpr) + 'px Share Tech Mono';
+        ctx.textAlign = 'right';
+        for (var i = 0; i <= 5; i++) {
+            var v = Math.round(110 - i * 22);
+            ctx.fillText(v + '%', pad.l - 8*dpr, pad.t + (gH / 5) * i + 4*dpr);
+        }
+
+        // Labels X
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#555';
+        for (var i = 0; i < chartLabels.length; i++) {
+            ctx.fillText(chartLabels[i], pad.l + (gW / 6) * i, H - pad.b + 18*dpr);
+        }
+
+        // Função auxiliar para desenhar linha
+        function drawLine(data, color, dash, glowColor, keyName) {
+            if (!chartLinesVisible[keyName]) return;
+
+            // Glow
+            ctx.beginPath();
+            ctx.strokeStyle = glowColor;
+            ctx.lineWidth = 8 * dpr;
+            ctx.setLineDash([]);
+            for (var i = 0; i < data.length; i++) {
+                var px = pad.l + (gW / 6) * i;
+                var py = pad.t + gH - (data[i] / 110) * gH * chartAnim;
+                if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+
+            // Linha principal
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2.5 * dpr;
+            if (dash) ctx.setLineDash(dash); else ctx.setLineDash([]);
+            for (var i = 0; i < data.length; i++) {
+                var px = pad.l + (gW / 6) * i;
+                var py = pad.t + gH - (data[i] / 110) * gH * chartAnim;
+                if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Pontos
+            for (var i = 0; i < data.length; i++) {
+                var px = pad.l + (gW / 6) * i;
+                var py = pad.t + gH - (data[i] / 110) * gH * chartAnim;
+                var isH = chartHover && chartHover.key === keyName && chartHover.idx === i;
+
+                ctx.beginPath();
+                ctx.arc(px, py, (isH ? 7 : 3.5) * dpr, 0, Math.PI * 2);
+                ctx.fillStyle = isH ? color : color + '80';
+                ctx.fill();
+
+                if (isH) {
+                    ctx.beginPath();
+                    ctx.arc(px, py, 12 * dpr, 0, Math.PI * 2);
+                    ctx.strokeStyle = color + '40';
+                    ctx.lineWidth = 2 * dpr;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        drawLine(chartCascade, '#ef4444', [6*dpr, 4*dpr], 'rgba(239,68,68,0.1)', 'cascade');
+        drawLine(chartXP, '#FF6B00', null, 'rgba(255,107,0,0.12)', 'xp');
+    }
+
+    /* =========================================
+       DESAFIOS TOGGLE
+    ========================================= */
+    function toggleCh(n){
+        var body=document.getElementById('ch'+n+'-body');
+        var arrow=document.getElementById('ch'+n+'-arrow');
+        body.classList.toggle('hidden');
+        arrow.style.transform=body.classList.contains('hidden')?'':'rotate(180deg)';
+    }
+
+    /* =========================================
+       QUIZ
+    ========================================= */
+    function startQuiz(){
+        document.getElementById('quiz-start').classList.add('hidden');
+        document.getElementById('quiz-area').classList.remove('hidden');
+        currentQ=0;userAnswers=new Array(30).fill(-1);quizFinished=false;
+        renderDots();renderQuestion();
+    }
+    function renderDots(){
+        var c=document.getElementById('quiz-dots');c.innerHTML='';
+        for(var i=0;i<30;i++){
+            var d=document.createElement('button');
+            d.className='w-2 h-2 rounded-full transition-colors '+(i===currentQ?'bg-cb-orange':(userAnswers[i]>=0?'bg-cb-orange/40':'bg-gray-700'));
+            d.setAttribute('data-qi',i);
+            d.onclick=(function(idx){return function(){currentQ=idx;renderQuestion()}})(i);
+            d.setAttribute('aria-label','Questão '+(i+1));
+            c.appendChild(d);
+        }
+    }
+    function renderQuestion(){
+        var q=quizData[currentQ],L=['A','B','C','D','E'];
+        document.getElementById('quiz-question').innerHTML='<span class="text-cb-orange font-orbitron text-xs mr-2">'+String(currentQ+1).padStart(2,'0')+'.</span>'+q.q;
+        document.getElementById('quiz-progress-text').textContent=String(currentQ+1).padStart(2,'0')+' / 30';
+        document.getElementById('quiz-score-text').textContent='Respondidas: '+userAnswers.filter(function(a){return a>=0}).length;
+        document.getElementById('quiz-progress-bar').style.width=((currentQ+1)/30*100)+'%';
+        var oc=document.getElementById('quiz-options');oc.innerHTML='';
+        q.o.forEach(function(o,i){
+            var d=document.createElement('div');d.className='quiz-option text-sm'+(userAnswers[currentQ]===i?' selected':'');
+            d.innerHTML='<span class="text-cb-orange font-bold mr-3">'+L[i]+')</span>'+o;
+            d.onclick=(function(idx){return function(){userAnswers[currentQ]=idx;document.querySelectorAll('.quiz-option').forEach(function(x,j){x.classList.toggle('selected',j===idx)});renderDots()}})(i);
+            oc.appendChild(d);
+        });
+        document.getElementById('quiz-prev-btn').style.visibility=currentQ===0?'hidden':'visible';
+        document.getElementById('quiz-next-btn').innerHTML=currentQ===29?'FINALIZAR<i class="fas fa-flag-checkered ml-2"></i>':'PRÓXIMA<i class="fas fa-arrow-right ml-2"></i>';
+        renderDots();
+    }
+    function nextQ(){if(currentQ<29){currentQ++;renderQuestion()}else finishQuiz()}
+    function prevQ(){if(currentQ>0){currentQ--;renderQuestion()}}
+    function finishQuiz(){
+        quizFinished=true;var c=0,w=0,b=0;
+        userAnswers.forEach(function(a,i){if(a<0)b++;else if(a===quizData[i].a)c++;else w++});
+        var p=Math.round(c/30*100);
+        document.getElementById('quiz-area').classList.add('hidden');
+        document.getElementById('quiz-result').classList.remove('hidden');
+        document.getElementById('quiz-review').classList.add('hidden');
+        document.getElementById('result-correct').textContent=c;
+        document.getElementById('result-wrong').textContent=w;
+        document.getElementById('result-blank').textContent=b;
+        document.getElementById('result-percent').textContent='Você acertou '+p+'% das questões.';
+        var bar=document.getElementById('result-bar');var bc='#ef4444';
+        if(p>=70)bc='#22c55e';else if(p>=50)bc='#FF6B00';
+        bar.style.width=p+'%';bar.style.background=bc;
+        var ic=document.getElementById('result-icon'),ti=document.getElementById('result-title'),su=document.getElementById('result-subtitle');
+        if(p>=90){ic.innerHTML='<i class="fas fa-trophy"></i>';ti.textContent='XP Master';su.textContent='Conhecimento excepcional.'}
+        else if(p>=70){ic.innerHTML='<i class="fas fa-medal"></i>';ti.textContent='XP Developer';su.textContent='Bom domínio. Revise pontos fracos.'}
+        else if(p>=50){ic.innerHTML='<i class="fas fa-code"></i>';ti.textContent='XP Apprentice';su.textContent='Conhecimento básico. Reestude.'}
+        else{ic.innerHTML='<i class="fas fa-book"></i>';ti.textContent='XP Beginner';su.textContent='Revisão completa necessária.'}
+    }
+    function reviewQuiz(){
+        document.getElementById('quiz-result').classList.add('hidden');
+        document.getElementById('quiz-review').classList.remove('hidden');
+        var c=document.getElementById('review-container');c.innerHTML='';var L=['A','B','C','D','E'];
+        quizData.forEach(function(q,qi){
+            var d=document.createElement('div');d.className='neon-border rounded-xl bg-cb-card p-5';
+            var ua=userAnswers[qi],ok=ua===q.a,bl=ua<0;
+            var si='',sc='';
+            if(bl){si='<i class="fas fa-minus-circle text-gray-500"></i>';sc='border-l-2 border-gray-600'}
+            else if(ok){si='<i class="fas fa-check-circle text-green-400"></i>';sc='border-l-2 border-green-500'}
+            else{si='<i class="fas fa-times-circle text-red-400"></i>';sc='border-l-2 border-red-500'}
+            var oh='';q.o.forEach(function(o,oi){
+                var cls='px-3 py-2 rounded text-xs ';
+                if(oi===q.a)cls+='bg-green-500/10 border border-green-500/30 text-green-400';
+                else if(oi===ua&&!ok)cls+='bg-red-500/10 border border-red-500/30 text-red-400';
+                else cls+='border border-cb-border text-gray-500';
+                oh+='<div class="'+cls+'"><span class="font-bold mr-2">'+L[oi]+')</span>'+o+'</div>';
+            });
+            var extra=!bl&&!ok?'<p class="text-gray-500 text-xs mt-2 ml-8">Sua: '+L[ua]+' | Correta: '+L[q.a]+'</p>':'';
+            d.innerHTML='<div class="flex items-start gap-3 mb-3 '+sc+' pl-3">'+si+'<p class="text-gray-200 text-xs leading-relaxed"><span class="text-cb-orange font-orbitron">'+String(qi+1).padStart(2,'0')+'.</span> '+q.q+'</p></div><div class="grid gap-2 ml-8">'+oh+'</div>'+extra;
+            c.appendChild(d);
+        });
+    }
+    function backToResult(){document.getElementById('quiz-review').classList.add('hidden');document.getElementById('quiz-result').classList.remove('hidden')}
+    function restartQuiz(){document.getElementById('quiz-result').classList.add('hidden');document.getElementById('quiz-review').classList.add('hidden');startQuiz()}
+
+    function showToast(m,t){var el=document.getElementById('toast');el.className='toast toast-'+t+' show';el.textContent=m;setTimeout(function(){el.classList.remove('show')},3000)}
+    </script>
+
+</body></html>
